@@ -60,8 +60,33 @@ class Game:
 
 class Tetromino:
 
-    def __init__(self):
-        pass
+    def __init__(self, tetromino):
+        self.data = tetromino['data']
+        self.size = tetromino['size']
+        self.rotation = 0
+
+    def get(self, row: int, col: int) -> int:
+        match self.rotation:
+            case 0:
+                return self.data[
+                    row *
+                    self.size + col
+                    ]
+            case 1:
+                return self.data[
+                    self.size - col - 1 *
+                    self.size + row
+                    ]
+            case 2:
+                return self.data[
+                    self.size - row - 1 *
+                    self.size + (self.size - col - 1)
+                    ]
+            case 3:
+                return self.data[
+                    col *
+                    self.size + (self.size - row - 1)
+                    ]
 
 
 if __name__ == '__main__':
