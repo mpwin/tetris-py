@@ -1,6 +1,8 @@
 import pygame
 
 
+GRID_SIZE = 40
+
 TETROMINO_I = [
     0, 0, 0, 0,
     1, 1, 1, 1,
@@ -50,13 +52,19 @@ TETROMINOS = [
 
 def main():
     pygame.init()
-    pygame.display.set_mode([640, 480])
+    screen = pygame.display.set_mode([640, 480])
+    screen.fill((0, 0, 0))
 
+    tetromino = Tetromino(TETROMINOS[0])
     running = True
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+        draw_tetromino(screen, tetromino)
+        pygame.display.flip()
 
     pygame.quit()
 
@@ -72,6 +80,8 @@ class Tetromino:
     def __init__(self, tetromino):
         self.data = tetromino['data']
         self.size = tetromino['size']
+        self.row = 0
+        self.col = 0
         self.rotation = 0
 
     def get(self, row: int, col: int) -> int:
@@ -96,6 +106,25 @@ class Tetromino:
                     col *
                     self.size + (self.size - row - 1)
                     ]
+
+
+def draw_rect(screen, x: int, y: int, w: int, h: int):
+    rect = pygame.Rect(x, y, w, h)
+    pygame.draw.rect(screen, (255, 255, 255), rect)
+
+
+def draw_tetromino(screen, tetromino: Tetromino):
+    for row in range(0, tetromino.size):
+        for col in range(0, tetromino.size):
+            value = tetromino.get(row, col)
+            if value > 0:
+                draw_rect(
+                    screen,
+                    (col + tetromino.col) * GRID_SIZE,
+                    (row + tetromino.row) * GRID_SIZE,
+                    GRID_SIZE,
+                    GRID_SIZE,
+                    )
 
 
 if __name__ == '__main__':
