@@ -39,7 +39,7 @@ TETROMINO_Z = [
     0, 0, 0,
     ]
 
-TETROMINOS = [
+TETROMINOES = [
     dict(data=TETROMINO_I, size=4),
     dict(data=TETROMINO_J, size=3),
     dict(data=TETROMINO_L, size=3),
@@ -55,7 +55,7 @@ def main():
     screen = pygame.display.set_mode([640, 480])
     screen.fill((0, 0, 0))
 
-    tetromino = Tetromino(TETROMINOS[0])
+    tetromino = Tetromino(TETROMINOES[0])
     running = True
 
     while running:
