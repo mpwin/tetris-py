@@ -1,3 +1,5 @@
+import copy
+
 import pygame
 
 
@@ -85,12 +87,17 @@ class Game:
         self.tetromino = Tetromino(TETROMINOES[0])
 
     def update(self, input):
+        tetromino = copy.deepcopy(self.tetromino)
+
         if 'up' in input:
-            self.tetromino.rotation = (self.tetromino.rotation + 1) % 4
+            tetromino.rotation = (self.tetromino.rotation + 1) % 4
         if 'left' in input:
-            self.tetromino.col -= 1
+            tetromino.col -= 1
         if 'right' in input:
-            self.tetromino.col += 1
+            tetromino.col += 1
+
+        if tetromino.valid():
+            self.tetromino = tetromino
 
 
 class Tetromino:
@@ -124,6 +131,21 @@ class Tetromino:
                     col *
                     self.size + (self.size - row - 1)
                     ]
+
+    def valid(self):
+        for row in range(0, self.size):
+            for col in range(0, self.size):
+                value = self.get(row, col)
+                if value > 0:
+                    board_row = row + self.row
+                    board_col = col + self.col
+
+                    if board_col < 0:
+                        return False
+                    if board_col >= 10:
+                        return False
+
+        return True
 
 
 def draw_rect(screen, x: int, y: int, w: int, h: int):
