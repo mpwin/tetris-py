@@ -93,12 +93,12 @@ class Tetromino:
                     ]
             case 1:
                 return self.data[
-                    self.size - col - 1 *
+                    (self.size - col - 1) *
                     self.size + row
                     ]
             case 2:
                 return self.data[
-                    self.size - row - 1 *
+                    (self.size - row - 1) *
                     self.size + (self.size - col - 1)
                     ]
             case 3:
