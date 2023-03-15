@@ -53,16 +53,26 @@ TETROMINOES = [
 def main():
     pygame.init()
     screen = pygame.display.set_mode([640, 480])
-    screen.fill((0, 0, 0))
 
     game = Game()
     running = True
 
     while running:
+        input = set()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    input.add('up')
+                if event.key == pygame.K_LEFT:
+                    input.add('left')
+                if event.key == pygame.K_RIGHT:
+                    input.add('right')
 
+        game.update(input)
+        screen.fill((0, 0, 0))
         draw_tetromino(screen, game.tetromino)
         pygame.display.flip()
 
@@ -73,6 +83,14 @@ class Game:
 
     def __init__(self):
         self.tetromino = Tetromino(TETROMINOES[0])
+
+    def update(self, input):
+        if 'up' in input:
+            self.tetromino.rotation = (self.tetromino.rotation + 1) % 4
+        if 'left' in input:
+            self.tetromino.col -= 1
+        if 'right' in input:
+            self.tetromino.col += 1
 
 
 class Tetromino:
