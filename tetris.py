@@ -3,7 +3,12 @@ import copy
 import pygame
 
 
+BOARD_WIDTH = 10
+BOARD_HEIGHT = 20
 GRID_SIZE = 40
+
+SCREEN_WIDTH = BOARD_WIDTH * GRID_SIZE
+SCREEN_HEIGHT = BOARD_HEIGHT * GRID_SIZE
 
 TETROMINO_I = [
     0, 0, 0, 0,
@@ -54,7 +59,7 @@ TETROMINOES = [
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode([640, 480])
+    screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
     game = Game()
     running = True
@@ -142,7 +147,7 @@ class Tetromino:
 
                     if board_col < 0:
                         return False
-                    if board_col >= 10:
+                    if board_col >= BOARD_WIDTH:
                         return False
 
         return True
