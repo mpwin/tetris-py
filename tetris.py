@@ -55,7 +55,7 @@ def main():
     screen = pygame.display.set_mode([640, 480])
     screen.fill((0, 0, 0))
 
-    tetromino = Tetromino(TETROMINOES[0])
+    game = Game()
     running = True
 
     while running:
@@ -63,7 +63,7 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        draw_tetromino(screen, tetromino)
+        draw_tetromino(screen, game.tetromino)
         pygame.display.flip()
 
     pygame.quit()
@@ -72,7 +72,7 @@ def main():
 class Game:
 
     def __init__(self):
-        pass
+        self.tetromino = Tetromino(TETROMINOES[0])
 
 
 class Tetromino:
