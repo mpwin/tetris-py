@@ -91,7 +91,11 @@ def main():
 class Game:
 
     def __init__(self):
+        self.board = [0] * BOARD_WIDTH * BOARD_HEIGHT
         self.tetromino = Tetromino(TETROMINOES[0])
+
+    def board_get(self, row, col):
+        return self.board[row * BOARD_WIDTH + col]
 
     def update(self, input):
         tetromino = copy.deepcopy(self.tetromino)
