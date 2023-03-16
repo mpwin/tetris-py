@@ -82,6 +82,7 @@ def main():
 
         game.update(input)
         screen.fill((0, 0, 0))
+        draw_board(screen, game)
         draw_tetromino(screen, game.tetromino)
         pygame.display.flip()
 
@@ -157,6 +158,20 @@ class Tetromino:
                         return False
 
         return True
+
+
+def draw_board(screen, game: Game):
+    for row in range(0, BOARD_HEIGHT):
+        for col in range(0, BOARD_WIDTH):
+            value = game.board_get(row, col)
+            if value > 0:
+                draw_rect(
+                    screen,
+                    col * GRID_SIZE,
+                    row * GRID_SIZE,
+                    GRID_SIZE,
+                    GRID_SIZE,
+                    )
 
 
 def draw_rect(screen, x: int, y: int, w: int, h: int):
