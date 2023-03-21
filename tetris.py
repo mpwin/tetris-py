@@ -63,6 +63,7 @@ def main():
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
     # game = Game()
+    board = tuple([0] * BOARD_WIDTH * BOARD_HEIGHT)
     running = True
 
     while running:
@@ -83,7 +84,7 @@ def main():
 
         # game.update(input)
         screen.fill((0, 0, 0))
-        # draw_board(screen, game)
+        draw_board(screen, board)
         # draw_tetromino(screen, game.tetromino)
         pygame.display.flip()
 
@@ -161,10 +162,14 @@ class Tetromino:
         return True
 
 
-def draw_board(screen, game: Game):
+def board_get(board, row, col):
+    return board[row * BOARD_WIDTH + col]
+
+
+def draw_board(screen, board):
     for row in range(0, BOARD_HEIGHT):
         for col in range(0, BOARD_WIDTH):
-            value = game.board_get(row, col)
+            value = board_get(board, row, col)
             if value > 0:
                 draw_rect(
                     screen,
