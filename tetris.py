@@ -1,3 +1,4 @@
+from collections import namedtuple
 import copy
 
 import pygame
@@ -61,11 +62,11 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
-    game = Game()
+    # game = Game()
     running = True
 
     while running:
-        input = set()
+        # input = set()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -73,17 +74,17 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
-                if event.key == pygame.K_UP:
-                    input.add('up')
-                if event.key == pygame.K_LEFT:
-                    input.add('left')
-                if event.key == pygame.K_RIGHT:
-                    input.add('right')
+            #     if event.key == pygame.K_UP:
+            #         input.add('up')
+            #     if event.key == pygame.K_LEFT:
+            #         input.add('left')
+            #     if event.key == pygame.K_RIGHT:
+            #         input.add('right')
 
-        game.update(input)
+        # game.update(input)
         screen.fill((0, 0, 0))
-        draw_board(screen, game)
-        draw_tetromino(screen, game.tetromino)
+        # draw_board(screen, game)
+        # draw_tetromino(screen, game.tetromino)
         pygame.display.flip()
 
     pygame.quit()
