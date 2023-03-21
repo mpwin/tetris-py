@@ -84,6 +84,7 @@ def main():
                     input.add('right')
 
         tetromino = tetromino_update(tetromino, board, input)
+
         screen.fill((0, 0, 0))
         draw_board(screen, board)
         draw_tetromino(screen, tetromino)
@@ -171,11 +172,6 @@ def draw_board(screen, board):
                     )
 
 
-def draw_rect(screen, x: int, y: int, w: int, h: int):
-    rect = pygame.Rect(x, y, w, h)
-    pygame.draw.rect(screen, (255, 255, 255), rect)
-
-
 def draw_tetromino(screen, tetromino):
     data = TETROMINOES[tetromino.index]['data']
     size = TETROMINOES[tetromino.index]['size']
@@ -191,6 +187,11 @@ def draw_tetromino(screen, tetromino):
                     GRID_SIZE,
                     GRID_SIZE,
                     )
+
+
+def draw_rect(screen, x: int, y: int, w: int, h: int):
+    rect = pygame.Rect(x, y, w, h)
+    pygame.draw.rect(screen, (255, 255, 255), rect)
 
 
 if __name__ == '__main__':
