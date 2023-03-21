@@ -86,7 +86,7 @@ def main():
                     input.add('right')
 
         # game.update(input)
-        tetromino = tetromino_update(tetromino, input)
+        tetromino = tetromino_update(tetromino, board, input)
         screen.fill((0, 0, 0))
         draw_board(screen, board)
         draw_tetromino(screen, tetromino)
@@ -194,18 +194,41 @@ def tetromino_get(data, size, row, col, rotation):
                 ]
 
 
-def tetromino_update(tetromino, input):
+def tetromino_update(tetromino, board, input):
+    updated = tetromino
+
     if 'up' in input:
         rotation = (tetromino.rotation + 1) % 4
-        tetromino = tetromino._replace(rotation=rotation)
+        updated = updated._replace(rotation=rotation)
     if 'left' in input:
         col = tetromino.col - 1
-        tetromino = tetromino._replace(col=col)
+        updated = updated._replace(col=col)
     if 'right' in input:
         col = tetromino.col + 1
-        tetromino = tetromino._replace(col=col)
+        updated = updated._replace(col=col)
 
-    return tetromino
+    if tetromino_valid(updated, board):
+        return updated
+    else:
+        return tetromino
+
+
+def tetromino_valid(tetromino, board):
+    data = TETROMINOES[tetromino.index]['data']
+    size = TETROMINOES[tetromino.index]['size']
+
+    for row in range(0, size):
+        for col in range(0, size):
+            value = tetromino_get(data, size, row, col, tetromino.rotation)
+            if value > 0:
+                board_col = col + tetromino.col
+
+                if board_col < 0:
+                    return False
+                if board_col >= BOARD_WIDTH:
+                    return False
+
+    return True
 
 
 def draw_board(screen, board):
