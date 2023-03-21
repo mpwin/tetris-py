@@ -1,5 +1,4 @@
 from collections import namedtuple
-import copy
 
 import pygame
 
@@ -64,7 +63,6 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
-    # game = Game()
     board = tuple([0] * BOARD_WIDTH * BOARD_HEIGHT)
     tetromino = Tetromino(0, 0, 0, 0)
     running = True
@@ -85,7 +83,6 @@ def main():
                 if event.key == pygame.K_RIGHT:
                     input.add('right')
 
-        # game.update(input)
         tetromino = tetromino_update(tetromino, board, input)
         screen.fill((0, 0, 0))
         draw_board(screen, board)
@@ -93,77 +90,6 @@ def main():
         pygame.display.flip()
 
     pygame.quit()
-
-
-class Game:
-
-    def __init__(self):
-        self.board = [0] * BOARD_WIDTH * BOARD_HEIGHT
-        self.tetromino = Tetromino(TETROMINOES[0])
-
-    def board_get(self, row, col):
-        return self.board[row * BOARD_WIDTH + col]
-
-    def update(self, input):
-        tetromino = copy.deepcopy(self.tetromino)
-
-        if 'up' in input:
-            tetromino.rotation = (self.tetromino.rotation + 1) % 4
-        if 'left' in input:
-            tetromino.col -= 1
-        if 'right' in input:
-            tetromino.col += 1
-
-        if tetromino.valid():
-            self.tetromino = tetromino
-
-
-class Tetromino:
-
-    def __init__(self, tetromino):
-        self.data = tetromino['data']
-        self.size = tetromino['size']
-        self.row = 0
-        self.col = 0
-        self.rotation = 0
-
-    def get(self, row: int, col: int) -> int:
-        match self.rotation:
-            case 0:
-                return self.data[
-                    row *
-                    self.size + col
-                    ]
-            case 1:
-                return self.data[
-                    (self.size - col - 1) *
-                    self.size + row
-                    ]
-            case 2:
-                return self.data[
-                    (self.size - row - 1) *
-                    self.size + (self.size - col - 1)
-                    ]
-            case 3:
-                return self.data[
-                    col *
-                    self.size + (self.size - row - 1)
-                    ]
-
-    def valid(self):
-        for row in range(0, self.size):
-            for col in range(0, self.size):
-                value = self.get(row, col)
-                if value > 0:
-                    board_row = row + self.row
-                    board_col = col + self.col
-
-                    if board_col < 0:
-                        return False
-                    if board_col >= BOARD_WIDTH:
-                        return False
-
-        return True
 
 
 def board_get(board, row, col):
