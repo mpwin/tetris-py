@@ -70,7 +70,7 @@ def main():
     running = True
 
     while running:
-        # input = set()
+        input = set()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -78,14 +78,15 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
-            #     if event.key == pygame.K_UP:
-            #         input.add('up')
-            #     if event.key == pygame.K_LEFT:
-            #         input.add('left')
-            #     if event.key == pygame.K_RIGHT:
-            #         input.add('right')
+                if event.key == pygame.K_UP:
+                    input.add('up')
+                if event.key == pygame.K_LEFT:
+                    input.add('left')
+                if event.key == pygame.K_RIGHT:
+                    input.add('right')
 
         # game.update(input)
+        tetromino = tetromino_update(tetromino, input)
         screen.fill((0, 0, 0))
         draw_board(screen, board)
         draw_tetromino(screen, tetromino)
@@ -191,6 +192,20 @@ def tetromino_get(data, size, row, col, rotation):
                 col *
                 size + (size - row - 1)
                 ]
+
+
+def tetromino_update(tetromino, input):
+    if 'up' in input:
+        rotation = (tetromino.rotation + 1) % 4
+        tetromino = tetromino._replace(rotation=rotation)
+    if 'left' in input:
+        col = tetromino.col - 1
+        tetromino = tetromino._replace(col=col)
+    if 'right' in input:
+        col = tetromino.col + 1
+        tetromino = tetromino._replace(col=col)
+
+    return tetromino
 
 
 def draw_board(screen, board):
