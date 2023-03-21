@@ -59,11 +59,14 @@ TETROMINOES = [
 
 
 def main():
+    Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
+
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
     # game = Game()
     board = tuple([0] * BOARD_WIDTH * BOARD_HEIGHT)
+    tetromino = Tetromino(0, 0, 0, 0)
     running = True
 
     while running:
@@ -85,7 +88,7 @@ def main():
         # game.update(input)
         screen.fill((0, 0, 0))
         draw_board(screen, board)
-        # draw_tetromino(screen, game.tetromino)
+        draw_tetromino(screen, tetromino)
         pygame.display.flip()
 
     pygame.quit()
@@ -166,6 +169,30 @@ def board_get(board, row, col):
     return board[row * BOARD_WIDTH + col]
 
 
+def tetromino_get(data, size, row, col, rotation):
+    match rotation:
+        case 0:
+            return data[
+                row *
+                size + col
+                ]
+        case 1:
+            return data[
+                (size - col - 1) *
+                size + row
+                ]
+        case 2:
+            return data[
+                (size - row - 1) *
+                size + (size - col - 1)
+                ]
+        case 3:
+            return data[
+                col *
+                size + (size - row - 1)
+                ]
+
+
 def draw_board(screen, board):
     for row in range(0, BOARD_HEIGHT):
         for col in range(0, BOARD_WIDTH):
@@ -185,10 +212,13 @@ def draw_rect(screen, x: int, y: int, w: int, h: int):
     pygame.draw.rect(screen, (255, 255, 255), rect)
 
 
-def draw_tetromino(screen, tetromino: Tetromino):
-    for row in range(0, tetromino.size):
-        for col in range(0, tetromino.size):
-            value = tetromino.get(row, col)
+def draw_tetromino(screen, tetromino):
+    data = TETROMINOES[tetromino.index]['data']
+    size = TETROMINOES[tetromino.index]['size']
+
+    for row in range(0, size):
+        for col in range(0, size):
+            value = tetromino_get(data, size, row, col, tetromino.rotation)
             if value > 0:
                 draw_rect(
                     screen,
