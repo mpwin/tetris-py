@@ -233,8 +233,9 @@ def draw_tetromino(screen: pygame.Surface, t: Tetromino) -> None:
                     )
 
 
-def draw_rect(screen: pygame.Surface,
-              x: int, y: int, w: int, h: int) -> None:
+def draw_rect(
+        screen: pygame.Surface,
+        x: int, y: int, w: int, h: int) -> None:
     rect = pygame.Rect(x, y, w, h)
     pygame.draw.rect(screen, (255, 255, 255), rect)
 
