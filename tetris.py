@@ -110,11 +110,11 @@ def update(board, tetromino, input):
         col = tetromino.col + 1
         u_tetromino = u_tetromino._replace(col=col)
 
-    if tetromino_valid(u_tetromino, board):
+    if tetromino_is_valid(u_tetromino):
         tetromino = u_tetromino
 
     if 'down' in input:
-        board, tetromino = tetromino_drop(tetromino, board)
+        tetromino, board = tetromino_move_down(tetromino, board)
 
     return board, tetromino
 
@@ -130,12 +130,11 @@ def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
 
 
 def board_update(b: Board, t: Tetromino) -> Board:
-    data = TETROMINOES[t.index]['data']
     size = TETROMINOES[t.index]['size']
 
     for row in range(0, size):
         for col in range(0, size):
-            val = tetromino_get(data, size, row, col, t.rotation)
+            val = tetromino_get_tile(t, row, col)
             if val > 0:
                 b_row = row + t.row
                 b_col = col + t.col
@@ -144,19 +143,11 @@ def board_update(b: Board, t: Tetromino) -> Board:
     return b
 
 
-def tetromino_drop(tetromino, board):
-    tetromino_down = tetromino._replace(row=tetromino.row+1)
+def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
+    data = TETROMINOES[t.index]['data']
+    size = TETROMINOES[t.index]['size']
 
-    if not tetromino_valid(tetromino_down, board):
-        board = board_update(board, tetromino)
-        Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
-        return board, Tetromino(0, 0, 0, 0)
-
-    return board, tetromino_down
-
-
-def tetromino_get(data, size, row, col, rotation):
-    match rotation:
+    match t.rotation:
         case 0:
             return data[
                 row *
@@ -179,22 +170,32 @@ def tetromino_get(data, size, row, col, rotation):
                 ]
 
 
-def tetromino_valid(tetromino, board):
-    data = TETROMINOES[tetromino.index]['data']
-    size = TETROMINOES[tetromino.index]['size']
+def tetromino_move_down(t: Tetromino, b: Board) -> tuple[Tetromino, Board]:
+    t = t._replace(row=t.row+1)
+
+    if not tetromino_is_valid(t):
+        t = t._replace(row=t.row-1)
+        b = board_update(b, t)
+        return Tetromino(0, 0, 0, 0), b
+    else:
+        return t, b
+
+
+def tetromino_is_valid(t: Tetromino) -> bool:
+    size = TETROMINOES[t.index]['size']
 
     for row in range(0, size):
         for col in range(0, size):
-            value = tetromino_get(data, size, row, col, tetromino.rotation)
-            if value > 0:
-                board_row = row + tetromino.row
-                board_col = col + tetromino.col
+            val = tetromino_get_tile(t, row, col)
+            if val > 0:
+                b_row = row + t.row
+                b_col = col + t.col
 
-                if board_row >= BOARD_HEIGHT:
+                if b_row >= BOARD_HEIGHT:
                     return False
-                if board_col < 0:
+                if b_col < 0:
                     return False
-                if board_col >= BOARD_WIDTH:
+                if b_col >= BOARD_WIDTH:
                     return False
 
     return True
@@ -220,7 +221,7 @@ def draw_tetromino(screen, tetromino):
 
     for row in range(0, size):
         for col in range(0, size):
-            value = tetromino_get(data, size, row, col, tetromino.rotation)
+            value = tetromino_get_tile(tetromino, row, col)
             if value > 0:
                 draw_rect(
                     screen,
