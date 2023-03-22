@@ -116,7 +116,7 @@ def update(
         t = tmp_tetromino
 
     if 'down' in input:
-        t, b = tetromino_move_down(t, b)
+        b, t = tetromino_move_down(b, t)
 
     return b, t
 
@@ -172,15 +172,15 @@ def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
                 ]
 
 
-def tetromino_move_down(t: Tetromino, b: Board) -> tuple[Tetromino, Board]:
+def tetromino_move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
     t = t._replace(row=t.row+1)
 
     if not tetromino_is_valid(t):
         t = t._replace(row=t.row-1)
         b = board_update(b, t)
-        return Tetromino(0, 0, 0, 0), b
+        return b, Tetromino(0, 0, 0, 0)
     else:
-        return t, b
+        return b, t
 
 
 def tetromino_is_valid(t: Tetromino) -> bool:
