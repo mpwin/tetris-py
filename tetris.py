@@ -119,29 +119,29 @@ def update(board, tetromino, input):
     return board, tetromino
 
 
-def board_get(board, row, col):
-    return board.board[row * BOARD_WIDTH + col]
+def board_get_tile(b: Board, row: int, col: int) -> int:
+    return b.board[row * BOARD_WIDTH + col]
 
 
-def board_set(board, row, col, value):
-    temp_board = list(board.board)
-    temp_board[row * BOARD_WIDTH + col] = value
-    return Board(temp_board)
+def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
+    board = list(b.board)
+    board[row * BOARD_WIDTH + col] = val
+    return Board(board)
 
 
-def board_update(board, tetromino):
-    data = TETROMINOES[tetromino.index]['data']
-    size = TETROMINOES[tetromino.index]['size']
+def board_update(b: Board, t: Tetromino) -> Board:
+    data = TETROMINOES[t.index]['data']
+    size = TETROMINOES[t.index]['size']
 
     for row in range(0, size):
         for col in range(0, size):
-            value = tetromino_get(data, size, row, col, tetromino.rotation)
-            if value > 0:
-                board_row = row + tetromino.row
-                board_col = col + tetromino.col
-                board = board_set(board, board_row, board_col, value)
+            val = tetromino_get(data, size, row, col, t.rotation)
+            if val > 0:
+                b_row = row + t.row
+                b_col = col + t.col
+                b = board_set_tile(b, b_row, b_col, val)
 
-    return board
+    return b
 
 
 def tetromino_drop(tetromino, board):
@@ -203,7 +203,7 @@ def tetromino_valid(tetromino, board):
 def draw_board(screen, board):
     for row in range(0, BOARD_HEIGHT):
         for col in range(0, BOARD_WIDTH):
-            value = board_get(board, row, col)
+            value = board_get_tile(board, row, col)
             if value > 0:
                 draw_rect(
                     screen,
