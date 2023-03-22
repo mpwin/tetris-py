@@ -97,26 +97,28 @@ def main():
     pygame.quit()
 
 
-def update(board, tetromino, input):
-    u_tetromino = tetromino
+def update(
+        b: Board, t: Tetromino,
+        input: set[str]) -> tuple[Board, Tetromino]:
+    tmp_tetromino = t
 
     if 'up' in input:
-        rotation = (tetromino.rotation + 1) % 4
-        u_tetromino = u_tetromino._replace(rotation=rotation)
+        rotation = (t.rotation + 1) % 4
+        tmp_tetromino = tmp_tetromino._replace(rotation=rotation)
     if 'left' in input:
-        col = tetromino.col - 1
-        u_tetromino = u_tetromino._replace(col=col)
+        col = t.col - 1
+        tmp_tetromino = tmp_tetromino._replace(col=col)
     if 'right' in input:
-        col = tetromino.col + 1
-        u_tetromino = u_tetromino._replace(col=col)
+        col = t.col + 1
+        tmp_tetromino = tmp_tetromino._replace(col=col)
 
-    if tetromino_is_valid(u_tetromino):
-        tetromino = u_tetromino
+    if tetromino_is_valid(tmp_tetromino):
+        t = tmp_tetromino
 
     if 'down' in input:
-        tetromino, board = tetromino_move_down(tetromino, board)
+        t, b = tetromino_move_down(t, b)
 
-    return board, tetromino
+    return b, t
 
 
 def board_get_tile(b: Board, row: int, col: int) -> int:
