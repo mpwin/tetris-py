@@ -83,7 +83,7 @@ def main():
                 if event.key == pygame.K_RIGHT:
                     input.add('right')
 
-        tetromino = tetromino_update(tetromino, board, input)
+        board, tetromino = update(board, tetromino, input)
 
         screen.fill((0, 0, 0))
         draw_board(screen, board)
@@ -91,6 +91,25 @@ def main():
         pygame.display.flip()
 
     pygame.quit()
+
+
+def update(board, tetromino, input):
+    u_tetromino = tetromino
+
+    if 'up' in input:
+        rotation = (tetromino.rotation + 1) % 4
+        u_tetromino = u_tetromino._replace(rotation=rotation)
+    if 'left' in input:
+        col = tetromino.col - 1
+        u_tetromino = u_tetromino._replace(col=col)
+    if 'right' in input:
+        col = tetromino.col + 1
+        u_tetromino = u_tetromino._replace(col=col)
+
+    if tetromino_valid(u_tetromino, board):
+        tetromino = u_tetromino
+
+    return board, tetromino
 
 
 def board_get(board, row, col):
@@ -119,25 +138,6 @@ def tetromino_get(data, size, row, col, rotation):
                 col *
                 size + (size - row - 1)
                 ]
-
-
-def tetromino_update(tetromino, board, input):
-    updated = tetromino
-
-    if 'up' in input:
-        rotation = (tetromino.rotation + 1) % 4
-        updated = updated._replace(rotation=rotation)
-    if 'left' in input:
-        col = tetromino.col - 1
-        updated = updated._replace(col=col)
-    if 'right' in input:
-        col = tetromino.col + 1
-        updated = updated._replace(col=col)
-
-    if tetromino_valid(updated, board):
-        return updated
-    else:
-        return tetromino
 
 
 def tetromino_valid(tetromino, board):
