@@ -78,6 +78,8 @@ def main():
                     running = False
                 if event.key == pygame.K_UP:
                     input.add('up')
+                if event.key == pygame.K_DOWN:
+                    input.add('down')
                 if event.key == pygame.K_LEFT:
                     input.add('left')
                 if event.key == pygame.K_RIGHT:
@@ -109,11 +111,19 @@ def update(board, tetromino, input):
     if tetromino_valid(u_tetromino, board):
         tetromino = u_tetromino
 
+    if 'down' in input:
+        tetromino = tetromino_drop(tetromino)
+
     return board, tetromino
 
 
 def board_get(board, row, col):
     return board[row * BOARD_WIDTH + col]
+
+
+def tetromino_drop(tetromino):
+    tetromino = tetromino._replace(row=tetromino.row+1)
+    return tetromino
 
 
 def tetromino_get(data, size, row, col, rotation):
