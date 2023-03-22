@@ -201,11 +201,11 @@ def tetromino_is_valid(t: Tetromino) -> bool:
     return True
 
 
-def draw_board(screen, board):
+def draw_board(screen: pygame.Surface, b: Board) -> None:
     for row in range(0, BOARD_HEIGHT):
         for col in range(0, BOARD_WIDTH):
-            value = board_get_tile(board, row, col)
-            if value > 0:
+            val = board_get_tile(b, row, col)
+            if val > 0:
                 draw_rect(
                     screen,
                     col * GRID_SIZE,
@@ -215,24 +215,24 @@ def draw_board(screen, board):
                     )
 
 
-def draw_tetromino(screen, tetromino):
-    data = TETROMINOES[tetromino.index]['data']
-    size = TETROMINOES[tetromino.index]['size']
+def draw_tetromino(screen: pygame.Surface, t: Tetromino) -> None:
+    size = TETROMINOES[t.index]['size']
 
     for row in range(0, size):
         for col in range(0, size):
-            value = tetromino_get_tile(tetromino, row, col)
-            if value > 0:
+            val = tetromino_get_tile(t, row, col)
+            if val > 0:
                 draw_rect(
                     screen,
-                    (col + tetromino.col) * GRID_SIZE,
-                    (row + tetromino.row) * GRID_SIZE,
+                    (col + t.col) * GRID_SIZE,
+                    (row + t.row) * GRID_SIZE,
                     GRID_SIZE,
                     GRID_SIZE,
                     )
 
 
-def draw_rect(screen, x: int, y: int, w: int, h: int):
+def draw_rect(screen: pygame.Surface,
+              x: int, y: int, w: int, h: int) -> None:
     rect = pygame.Rect(x, y, w, h)
     pygame.draw.rect(screen, (255, 255, 255), rect)
 
