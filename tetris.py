@@ -57,9 +57,10 @@ TETROMINOES = [
 ]
 
 
-def main():
-    Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
+Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
 
+
+def main():
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
