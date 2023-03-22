@@ -57,6 +57,7 @@ TETROMINOES = [
 ]
 
 
+Board = namedtuple('Board', ['board'])
 Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
 
 
@@ -64,7 +65,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
-    board = tuple([0] * BOARD_WIDTH * BOARD_HEIGHT)
+    board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT)
     tetromino = Tetromino(0, 0, 0, 0)
     running = True
 
@@ -119,13 +120,13 @@ def update(board, tetromino, input):
 
 
 def board_get(board, row, col):
-    return board[row * BOARD_WIDTH + col]
+    return board.board[row * BOARD_WIDTH + col]
 
 
 def board_set(board, row, col, value):
-    temp_board = list(board)
+    temp_board = list(board.board)
     temp_board[row * BOARD_WIDTH + col] = value
-    return tuple(temp_board)
+    return Board(temp_board)
 
 
 def board_update(board, tetromino):
