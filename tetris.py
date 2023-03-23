@@ -1,4 +1,5 @@
 from collections import namedtuple
+from random import randint
 
 import pygame
 
@@ -71,7 +72,7 @@ def main():
     clock = pygame.time.Clock()
 
     board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT)
-    tetromino = Tetromino(0, 0, 0, 0)
+    tetromino = tetromino_create()
     running = True
 
     while running:
@@ -154,6 +155,11 @@ def board_update(b: Board, t: Tetromino) -> Board:
     return b
 
 
+def tetromino_create() -> Tetromino:
+    shape = randint(0, len(TETROMINOES) - 1)
+    return Tetromino(shape, 0, 0, 0)
+
+
 def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
     data = TETROMINOES[t.index]['data']
     size = TETROMINOES[t.index]['size']
@@ -187,7 +193,7 @@ def tetromino_move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
     if not tetromino_is_valid(t, b):
         t = t._replace(row=t.row-1)
         b = board_update(b, t)
-        return b, Tetromino(0, 0, 0, 0)
+        return b, tetromino_create()
     else:
         return b, t
 
