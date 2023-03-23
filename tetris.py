@@ -56,6 +56,8 @@ TETROMINOES = [
     dict(data=TETROMINO_Z, size=3),
 ]
 
+DROP_EVENT = pygame.USEREVENT + 1
+
 
 Board = namedtuple('Board', ['board'])
 Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
@@ -63,6 +65,8 @@ Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
 
 def main():
     pygame.init()
+    pygame.time.set_timer(DROP_EVENT, 1000)
+
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     clock = pygame.time.Clock()
 
@@ -87,6 +91,8 @@ def main():
                     input.add('left')
                 if event.key == pygame.K_RIGHT:
                     input.add('right')
+            if event.type == DROP_EVENT:
+                board, tetromino = tetromino_move_down(board, tetromino)
 
         board, tetromino = update(board, tetromino, input)
 
