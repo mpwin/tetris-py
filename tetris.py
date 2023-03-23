@@ -112,7 +112,7 @@ def update(
         col = t.col + 1
         tmp_tetromino = tmp_tetromino._replace(col=col)
 
-    if tetromino_is_valid(tmp_tetromino):
+    if tetromino_is_valid(tmp_tetromino, b):
         t = tmp_tetromino
 
     if 'down' in input:
@@ -175,7 +175,7 @@ def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
 def tetromino_move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
     t = t._replace(row=t.row+1)
 
-    if not tetromino_is_valid(t):
+    if not tetromino_is_valid(t, b):
         t = t._replace(row=t.row-1)
         b = board_update(b, t)
         return b, Tetromino(0, 0, 0, 0)
@@ -183,7 +183,7 @@ def tetromino_move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
         return b, t
 
 
-def tetromino_is_valid(t: Tetromino) -> bool:
+def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
     size = TETROMINOES[t.index]['size']
 
     for row in range(0, size):
@@ -198,6 +198,8 @@ def tetromino_is_valid(t: Tetromino) -> bool:
                 if b_col < 0:
                     return False
                 if b_col >= BOARD_WIDTH:
+                    return False
+                if board_get_tile(b, b_row, b_col):
                     return False
 
     return True
