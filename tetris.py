@@ -64,6 +64,7 @@ Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
 def main():
     pygame.init()
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+    clock = pygame.time.Clock()
 
     board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT)
     tetromino = Tetromino(0, 0, 0, 0)
@@ -93,6 +94,8 @@ def main():
         draw_board(screen, board)
         draw_tetromino(screen, tetromino)
         pygame.display.flip()
+
+        clock.tick(60)
 
     pygame.quit()
 
