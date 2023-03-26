@@ -61,7 +61,7 @@ DROP_EVENT = pygame.USEREVENT + 1
 
 
 Board = namedtuple('Board', ['tiles', 'width', 'height'])
-Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
+Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
 
 
 def main():
@@ -145,7 +145,7 @@ def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
 
 
 def board_update(b: Board, t: Tetromino) -> Board:
-    size = TETROMINOES[t.index]['size']
+    size = TETROMINOES[t.shape]['size']
 
     for row in range(0, size):
         for col in range(0, size):
@@ -164,8 +164,8 @@ def tetromino_create() -> Tetromino:
 
 
 def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
-    data = TETROMINOES[t.index]['data']
-    size = TETROMINOES[t.index]['size']
+    data = TETROMINOES[t.shape]['data']
+    size = TETROMINOES[t.shape]['size']
 
     match t.rotation:
         case 0:
@@ -202,7 +202,7 @@ def tetromino_move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
 
 
 def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
-    size = TETROMINOES[t.index]['size']
+    size = TETROMINOES[t.shape]['size']
 
     for row in range(0, size):
         for col in range(0, size):
@@ -238,7 +238,7 @@ def draw_board(screen: pygame.Surface, b: Board) -> None:
 
 
 def draw_tetromino(screen: pygame.Surface, t: Tetromino) -> None:
-    size = TETROMINOES[t.index]['size']
+    size = TETROMINOES[t.shape]['size']
 
     for row in range(0, size):
         for col in range(0, size):
