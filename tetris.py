@@ -60,7 +60,7 @@ TETROMINOES = [
 DROP_EVENT = pygame.USEREVENT + 1
 
 
-Board = namedtuple('Board', ['board'])
+Board = namedtuple('Board', ['board', 'width', 'height'])
 Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
 
 
@@ -71,7 +71,10 @@ def main():
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     clock = pygame.time.Clock()
 
-    board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT)
+    board = Board(
+        [0] * BOARD_WIDTH * BOARD_HEIGHT,
+        BOARD_WIDTH, BOARD_HEIGHT,
+        )
     tetromino = tetromino_create()
     running = True
 
@@ -132,13 +135,13 @@ def update(
 
 
 def board_get_tile(b: Board, row: int, col: int) -> int:
-    return b.board[row * BOARD_WIDTH + col]
+    return b.board[row * b.width + col]
 
 
 def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
     board = list(b.board)
-    board[row * BOARD_WIDTH + col] = val
-    return Board(board)
+    board[row * b.width + col] = val
+    return b._replace(board=board)
 
 
 def board_update(b: Board, t: Tetromino) -> Board:
@@ -208,11 +211,11 @@ def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
                 b_row = row + t.row
                 b_col = col + t.col
 
-                if b_row >= BOARD_HEIGHT:
+                if b_row >= b.height:
                     return False
                 if b_col < 0:
                     return False
-                if b_col >= BOARD_WIDTH:
+                if b_col >= b.width:
                     return False
                 if board_get_tile(b, b_row, b_col):
                     return False
@@ -221,8 +224,8 @@ def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
 
 
 def draw_board(screen: pygame.Surface, b: Board) -> None:
-    for row in range(0, BOARD_HEIGHT):
-        for col in range(0, BOARD_WIDTH):
+    for row in range(0, b.height):
+        for col in range(0, b.width):
             val = board_get_tile(b, row, col)
             if val > 0:
                 draw_rect(
