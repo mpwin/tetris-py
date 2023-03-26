@@ -60,7 +60,7 @@ TETROMINOES = [
 DROP_EVENT = pygame.USEREVENT + 1
 
 
-Board = namedtuple('Board', ['board', 'width', 'height'])
+Board = namedtuple('Board', ['tiles', 'width', 'height'])
 Tetromino = namedtuple('Tetromino', ['index', 'row', 'col', 'rotation'])
 
 
@@ -135,13 +135,13 @@ def update(
 
 
 def board_get_tile(b: Board, row: int, col: int) -> int:
-    return b.board[row * b.width + col]
+    return b.tiles[row * b.width + col]
 
 
 def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
-    board = list(b.board)
-    board[row * b.width + col] = val
-    return b._replace(board=board)
+    tmp_tiles = list(b.tiles)
+    tmp_tiles[row * b.width + col] = val
+    return b._replace(tiles=tmp_tiles)
 
 
 def board_update(b: Board, t: Tetromino) -> Board:
