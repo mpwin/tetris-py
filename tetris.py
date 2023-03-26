@@ -131,6 +131,10 @@ def update(
     if 'down' in input:
         b, t = tetromino_move_down(b, t)
 
+        full_rows = get_full_rows(b)
+        if len(full_rows):
+            print(full_rows)
+
     return b, t
 
 
@@ -220,6 +224,21 @@ def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
                 if board_get_tile(b, b_row, b_col):
                     return False
 
+    return True
+
+
+def get_full_rows(b: Board) -> frozenset[int]:
+    rows = set()
+    for row in range(BOARD_HEIGHT):
+        if is_row_full(b, row):
+            rows.add(row)
+    return frozenset(rows)
+
+
+def is_row_full(b: Board, row: int) -> bool:
+    for col in range(BOARD_WIDTH):
+        if not board_get_tile(b, row, col):
+            return False
     return True
 
 
