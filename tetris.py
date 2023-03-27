@@ -47,14 +47,22 @@ TETROMINO_Z = [
     0, 0, 0,
     ]
 
+COLOR_AQUA = (0, 255, 255)
+COLOR_BLUE = (0, 0, 255)
+COLOR_ORANGE = (255, 170, 0)
+COLOR_YELLOW = (255, 255, 0)
+COLOR_LIME = (0, 255, 0)
+COLOR_PURPLE = (153, 0, 255)
+COLOR_RED = (255, 0, 0)
+
 TETROMINOES = [
-    dict(data=TETROMINO_I, size=4),
-    dict(data=TETROMINO_J, size=3),
-    dict(data=TETROMINO_L, size=3),
-    dict(data=TETROMINO_O, size=2),
-    dict(data=TETROMINO_S, size=3),
-    dict(data=TETROMINO_T, size=3),
-    dict(data=TETROMINO_Z, size=3),
+    dict(data=TETROMINO_I, size=4, color=COLOR_AQUA),
+    dict(data=TETROMINO_J, size=3, color=COLOR_BLUE),
+    dict(data=TETROMINO_L, size=3, color=COLOR_ORANGE),
+    dict(data=TETROMINO_O, size=2, color=COLOR_YELLOW),
+    dict(data=TETROMINO_S, size=3, color=COLOR_LIME),
+    dict(data=TETROMINO_T, size=3, color=COLOR_PURPLE),
+    dict(data=TETROMINO_Z, size=3, color=COLOR_RED),
 ]
 
 DROP_EVENT = pygame.USEREVENT + 1
@@ -265,6 +273,7 @@ def draw_board(screen: pygame.Surface, b: Board) -> None:
                     row * GRID_SIZE,
                     GRID_SIZE,
                     GRID_SIZE,
+                    val,
                     )
 
 
@@ -281,14 +290,16 @@ def draw_tetromino(screen: pygame.Surface, t: Tetromino) -> None:
                     (row + t.row) * GRID_SIZE,
                     GRID_SIZE,
                     GRID_SIZE,
+                    val
                     )
 
 
 def draw_rect(
         screen: pygame.Surface,
-        x: int, y: int, w: int, h: int) -> None:
+        x: int, y: int, w: int, h: int, tile: int) -> None:
     rect = pygame.Rect(x, y, w, h)
-    pygame.draw.rect(screen, (255, 255, 255), rect)
+    color = TETROMINOES[tile-1]['color']
+    pygame.draw.rect(screen, color, rect)
 
 
 if __name__ == '__main__':
