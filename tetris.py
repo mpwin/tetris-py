@@ -11,41 +11,41 @@ GRID_SIZE = 40
 SCREEN_WIDTH = BOARD_WIDTH * GRID_SIZE
 SCREEN_HEIGHT = BOARD_HEIGHT * GRID_SIZE
 
-TETROMINO_I = [
+TETROMINO_I = (
     0, 0, 0, 0,
     1, 1, 1, 1,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    ]
-TETROMINO_J = [
+    )
+TETROMINO_J = (
     2, 0, 0,
     2, 2, 2,
     0, 0, 0,
-    ]
-TETROMINO_L = [
+    )
+TETROMINO_L = (
     0, 0, 3,
     3, 3, 3,
     0, 0, 0,
-    ]
-TETROMINO_O = [
+    )
+TETROMINO_O = (
     4, 4,
     4, 4,
-    ]
-TETROMINO_S = [
+    )
+TETROMINO_S = (
     0, 5, 5,
     5, 5, 0,
     0, 0, 0,
-    ]
-TETROMINO_T = [
+    )
+TETROMINO_T = (
     0, 6, 0,
     6, 6, 6,
     0, 0, 0,
-    ]
-TETROMINO_Z = [
+    )
+TETROMINO_Z = (
     7, 7, 0,
     0, 7, 7,
     0, 0, 0,
-    ]
+    )
 
 COLOR_AQUA = (0, 255, 255)
 COLOR_BLUE = (0, 0, 255)
@@ -55,7 +55,7 @@ COLOR_LIME = (0, 255, 0)
 COLOR_PURPLE = (153, 0, 255)
 COLOR_RED = (255, 0, 0)
 
-TETROMINOES = [
+TETROMINOES = (
     dict(data=TETROMINO_I, size=4, color=COLOR_AQUA),
     dict(data=TETROMINO_J, size=3, color=COLOR_BLUE),
     dict(data=TETROMINO_L, size=3, color=COLOR_ORANGE),
@@ -63,7 +63,7 @@ TETROMINOES = [
     dict(data=TETROMINO_S, size=3, color=COLOR_LIME),
     dict(data=TETROMINO_T, size=3, color=COLOR_PURPLE),
     dict(data=TETROMINO_Z, size=3, color=COLOR_RED),
-]
+    )
 
 DROP_EVENT = pygame.USEREVENT + 1
 
