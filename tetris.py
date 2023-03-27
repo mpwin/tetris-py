@@ -68,7 +68,7 @@ TETROMINOES = [
 DROP_EVENT = pygame.USEREVENT + 1
 
 
-Board = namedtuple('Board', ['tiles', 'width', 'height'])
+Board = namedtuple('Board', ['tiles'])
 Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
 
 
@@ -79,10 +79,7 @@ def main():
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     clock = pygame.time.Clock()
 
-    board = Board(
-        [0] * BOARD_WIDTH * BOARD_HEIGHT,
-        BOARD_WIDTH, BOARD_HEIGHT,
-        )
+    board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT)
     tetromino = tetromino_create()
     running = True
 
@@ -147,12 +144,12 @@ def update(
 
 
 def board_get_tile(b: Board, row: int, col: int) -> int:
-    return b.tiles[row * b.width + col]
+    return b.tiles[row * BOARD_WIDTH + col]
 
 
 def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
     tmp_tiles = list(b.tiles)
-    tmp_tiles[row * b.width + col] = val
+    tmp_tiles[row * BOARD_WIDTH + col] = val
     return b._replace(tiles=tmp_tiles)
 
 
@@ -223,11 +220,11 @@ def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
                 b_row = row + t.row
                 b_col = col + t.col
 
-                if b_row >= b.height:
+                if b_row >= BOARD_HEIGHT:
                     return False
                 if b_col < 0:
                     return False
-                if b_col >= b.width:
+                if b_col >= BOARD_WIDTH:
                     return False
                 if board_get_tile(b, b_row, b_col):
                     return False
@@ -244,7 +241,7 @@ def clear_rows(b: Board, rows: frozenset[int]) -> Board:
             tmp_tiles.append(board_get_tile(b, row, col))
     tmp_tiles.extend([0] * BOARD_WIDTH * len(rows))
     tmp_tiles.reverse()
-    return Board(tmp_tiles, BOARD_WIDTH, BOARD_HEIGHT)
+    return Board(tmp_tiles)
 
 
 def get_full_rows(b: Board) -> frozenset[int]:
@@ -267,8 +264,8 @@ def is_row_full(b: Board, row: int) -> bool:
 
 
 def draw_board(screen: pygame.Surface, b: Board) -> None:
-    for row in range(0, b.height):
-        for col in range(0, b.width):
+    for row in range(0, BOARD_HEIGHT):
+        for col in range(0, BOARD_WIDTH):
             tile = board_get_tile(b, row, col)
             if tile > 0:
                 draw_tile(screen, tile, row, col)
