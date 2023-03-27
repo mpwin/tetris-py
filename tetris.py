@@ -265,18 +265,18 @@ def is_row_full(b: Board, row: int) -> bool:
 def draw_board(screen: pygame.Surface, b: Board) -> None:
     for row in range(0, b.height):
         for col in range(0, b.width):
-            val = board_get_tile(b, row, col)
-            if val > 0:
-                draw_tile(screen, val, row, col)
+            tile = board_get_tile(b, row, col)
+            if tile > 0:
+                draw_tile(screen, tile, row, col)
 
 
 def draw_tetromino(screen: pygame.Surface, t: Tetromino) -> None:
     size = TETROMINOES[t.shape]['size']
     for row in range(0, size):
         for col in range(0, size):
-            val = tetromino_get_tile(t, row, col)
-            if val > 0:
-                draw_tile(screen, val, row + t.row, col + t.col)
+            tile = tetromino_get_tile(t, row, col)
+            if tile > 0:
+                draw_tile(screen, tile, row + t.row, col + t.col)
 
 
 def draw_tile(screen: pygame.Surface, tile: int, row: int, col: int) -> None:
