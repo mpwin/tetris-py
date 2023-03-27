@@ -96,7 +96,7 @@ def main():
                 if event.key == pygame.K_RIGHT:
                     input.add('right')
             if event.type == DROP_EVENT:
-                board, tetromino = tetromino_move_down(board, tetromino)
+                input.add('drop')
 
         board, tetromino = update(board, tetromino, input)
 
@@ -128,7 +128,7 @@ def update(
     if tetromino_is_valid(tmp_tetromino, b):
         t = tmp_tetromino
 
-    if 'down' in input:
+    if 'down' in input or 'drop' in input:
         b, t = tetromino_move_down(b, t)
 
         full_rows = get_full_rows(b)
