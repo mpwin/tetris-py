@@ -133,7 +133,7 @@ def update(
 
         full_rows = get_full_rows(b)
         if len(full_rows):
-            print(full_rows)
+            b = clear_rows(b, full_rows)
 
     return b, t
 
@@ -225,6 +225,18 @@ def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
                     return False
 
     return True
+
+
+def clear_rows(b: Board, rows: frozenset[int]) -> Board:
+    tmp_tiles = []
+    for row in reversed(range(BOARD_HEIGHT)):
+        if row in rows:
+            continue
+        for col in reversed(range(BOARD_WIDTH)):
+            tmp_tiles.append(board_get_tile(b, row, col))
+    tmp_tiles.extend([0] * BOARD_WIDTH * len(rows))
+    tmp_tiles.reverse()
+    return Board(tmp_tiles, BOARD_WIDTH, BOARD_HEIGHT)
 
 
 def get_full_rows(b: Board) -> frozenset[int]:
