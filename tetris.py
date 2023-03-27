@@ -255,6 +255,10 @@ def get_full_rows(b: Board) -> frozenset[int]:
     return frozenset(rows)
 
 
+def get_tile_color(tile: int) -> tuple[int]:
+    return TETROMINOES[tile-1]['color']
+
+
 def is_row_full(b: Board, row: int) -> bool:
     for col in range(BOARD_WIDTH):
         if not board_get_tile(b, row, col):
@@ -280,14 +284,13 @@ def draw_tetromino(screen: pygame.Surface, t: Tetromino) -> None:
 
 
 def draw_tile(screen: pygame.Surface, tile: int, row: int, col: int) -> None:
-    color = TETROMINOES[tile-1]['color']
     rect = pygame.Rect(
         col * GRID_SIZE, # x
         row * GRID_SIZE, # y
         GRID_SIZE,
         GRID_SIZE,
         )
-    pygame.draw.rect(screen, color, rect)
+    pygame.draw.rect(screen, get_tile_color(tile), rect)
 
 
 if __name__ == '__main__':
