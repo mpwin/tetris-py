@@ -80,10 +80,6 @@ COLORS = (
     COLOR_WHITE,
     )
 
-EVENT_DROP = pygame.USEREVENT + 1
-EVENT_DELAY_CLEAR_ROWS = pygame.USEREVENT + 2
-EVENT_CLEAR_ROWS = pygame.USEREVENT + 3
-
 
 Event = Enum('Event', (
     'ROTATE',
@@ -94,6 +90,11 @@ Event = Enum('Event', (
     'HIGHLIGHT_ROWS',
     'CLEAR_ROWS',
     ))
+PygameEvent = Enum('PygameEvent', (
+    'FORCE_DOWN',
+    'HIGHLIGHT_ROWS',
+    'CLEAR_ROWS',
+    ), start=pygame.USEREVENT+1)
 
 Board = namedtuple('Board', ['tiles'])
 Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
@@ -101,7 +102,7 @@ Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
 
 def main():
     pygame.init()
-    pygame.time.set_timer(EVENT_DROP, 1000)
+    pygame.time.set_timer(PygameEvent.FORCE_DOWN.value, 1000)
 
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     clock = pygame.time.Clock()
@@ -127,11 +128,11 @@ def main():
 def get_events() -> tuple[frozenset[Event], bool]:
     events, running = set(), True
     for event in pygame.event.get():
-        if event.type == EVENT_DROP:
+        if event.type == PygameEvent.FORCE_DOWN.value:
             events.add(Event.FORCE_DOWN)
-        if event.type == EVENT_DELAY_CLEAR_ROWS:
+        if event.type == PygameEvent.HIGHLIGHT_ROWS.value:
             events.add(Event.HIGHLIGHT_ROWS)
-        if event.type == EVENT_CLEAR_ROWS:
+        if event.type == PygameEvent.CLEAR_ROWS.value:
             events.add(Event.CLEAR_ROWS)
         if event.type == pygame.QUIT:
             running = False
@@ -156,7 +157,10 @@ def update(
         b = clear_rows(b, get_full_rows(b))
         return b, t
     if Event.HIGHLIGHT_ROWS in events:
-        pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
+        pygame.event.post(
+            pygame.event.Event(
+                PygameEvent.HIGHLIGHT_ROWS.value
+            ))
         return b, t
 
     if Event.ROTATE in events:
@@ -172,8 +176,15 @@ def update(
         full_rows = get_full_rows(b)
         if len(full_rows):
             b = highlight_rows(b, full_rows)
-            pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
-            pygame.time.set_timer(EVENT_CLEAR_ROWS, 500, True)
+            pygame.event.post(
+                pygame.event.Event(
+                    PygameEvent.HIGHLIGHT_ROWS.value
+                ))
+            pygame.time.set_timer(
+                PygameEvent.CLEAR_ROWS.value,
+                500,
+                True,
+                )
 
     return b, t
 
