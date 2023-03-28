@@ -100,30 +100,8 @@ def main():
     running = True
 
     while running:
-        input = set()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                if event.key == pygame.K_UP:
-                    input.add('up')
-                if event.key == pygame.K_DOWN:
-                    input.add('down')
-                if event.key == pygame.K_LEFT:
-                    input.add('left')
-                if event.key == pygame.K_RIGHT:
-                    input.add('right')
-            if event.type == EVENT_DROP:
-                input.add('drop')
-            if event.type == EVENT_DELAY_CLEAR_ROWS:
-                input.add('delay_clear_rows')
-            if event.type == EVENT_CLEAR_ROWS:
-                input.add('clear_rows')
-
-        board, tetromino = update(board, tetromino, input)
+        events, running = get_events()
+        board, tetromino = update(board, tetromino, events)
 
         screen.fill(COLOR_BLACK)
         draw_board(screen, board)
@@ -133,6 +111,31 @@ def main():
         clock.tick(60)
 
     pygame.quit()
+
+
+def get_events() -> tuple[frozenset[str], bool]:
+    events, running = set(), True
+    for event in pygame.event.get():
+        if event.type == EVENT_DROP:
+            events.add('drop')
+        if event.type == EVENT_DELAY_CLEAR_ROWS:
+            events.add('delay_clear_rows')
+        if event.type == EVENT_CLEAR_ROWS:
+            events.add('clear_rows')
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                events.add('up')
+            if event.key == pygame.K_DOWN:
+                events.add('down')
+            if event.key == pygame.K_LEFT:
+                events.add('left')
+            if event.key == pygame.K_RIGHT:
+                events.add('right')
+            if event.key == pygame.K_ESCAPE:
+                running = False
+    return frozenset(events), running
 
 
 def update(
