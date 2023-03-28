@@ -140,30 +140,30 @@ def get_events() -> tuple[frozenset[str], bool]:
 
 def update(
         b: Board, t: Tetromino,
-        input: set[str]) -> tuple[Board, Tetromino]:
-    if 'clear_rows' in input:
+        events: set[str]) -> tuple[Board, Tetromino]:
+    if 'clear_rows' in events:
         b = clear_rows(b, get_full_rows(b))
         return b, t
-    if 'delay_clear_rows' in input:
+    if 'delay_clear_rows' in events:
         pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
         return b, t
 
     tmp_tetromino = t
 
-    if 'up' in input:
+    if 'up' in events:
         rotation = (t.rotation + 1) % 4
         tmp_tetromino = tmp_tetromino._replace(rotation=rotation)
-    if 'left' in input:
+    if 'left' in events:
         col = t.col - 1
         tmp_tetromino = tmp_tetromino._replace(col=col)
-    if 'right' in input:
+    if 'right' in events:
         col = t.col + 1
         tmp_tetromino = tmp_tetromino._replace(col=col)
 
     if tetromino_is_valid(tmp_tetromino, b):
         t = tmp_tetromino
 
-    if 'down' in input or 'drop' in input:
+    if 'down' in events or 'drop' in events:
         b, t = tetromino_move_down(b, t)
 
         full_rows = get_full_rows(b)
