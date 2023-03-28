@@ -47,6 +47,17 @@ TETROMINO_Z = (
     0, 0, 0,
     )
 
+TETROMINOES = (
+    dict(data=TETROMINO_I, size=4),
+    dict(data=TETROMINO_J, size=3),
+    dict(data=TETROMINO_L, size=3),
+    dict(data=TETROMINO_O, size=2),
+    dict(data=TETROMINO_S, size=3),
+    dict(data=TETROMINO_T, size=3),
+    dict(data=TETROMINO_Z, size=3),
+    )
+
+COLOR_BLACK = (0, 0, 0)
 COLOR_AQUA = (0, 255, 255)
 COLOR_BLUE = (0, 0, 255)
 COLOR_ORANGE = (255, 170, 0)
@@ -55,14 +66,15 @@ COLOR_LIME = (0, 255, 0)
 COLOR_PURPLE = (153, 0, 255)
 COLOR_RED = (255, 0, 0)
 
-TETROMINOES = (
-    dict(data=TETROMINO_I, size=4, color=COLOR_AQUA),
-    dict(data=TETROMINO_J, size=3, color=COLOR_BLUE),
-    dict(data=TETROMINO_L, size=3, color=COLOR_ORANGE),
-    dict(data=TETROMINO_O, size=2, color=COLOR_YELLOW),
-    dict(data=TETROMINO_S, size=3, color=COLOR_LIME),
-    dict(data=TETROMINO_T, size=3, color=COLOR_PURPLE),
-    dict(data=TETROMINO_Z, size=3, color=COLOR_RED),
+COLORS = (
+    COLOR_BLACK,
+    COLOR_AQUA,
+    COLOR_BLUE,
+    COLOR_ORANGE,
+    COLOR_YELLOW,
+    COLOR_LIME,
+    COLOR_PURPLE,
+    COLOR_RED,
     )
 
 EVENT_DROP = pygame.USEREVENT + 1
@@ -105,7 +117,7 @@ def main():
 
         board, tetromino = update(board, tetromino, input)
 
-        screen.fill((0, 0, 0))
+        screen.fill(COLOR_BLACK)
         draw_board(screen, board)
         draw_tetromino(screen, tetromino)
         pygame.display.flip()
@@ -252,10 +264,6 @@ def get_full_rows(b: Board) -> frozenset[int]:
     return frozenset(rows)
 
 
-def get_tile_color(tile: int) -> tuple[int]:
-    return TETROMINOES[tile-1]['color']
-
-
 def is_row_full(b: Board, row: int) -> bool:
     for col in range(BOARD_WIDTH):
         if not board_get_tile(b, row, col):
@@ -287,7 +295,7 @@ def draw_tile(screen: pygame.Surface, tile: int, row: int, col: int) -> None:
         GRID_SIZE,
         GRID_SIZE,
         )
-    pygame.draw.rect(screen, get_tile_color(tile), rect)
+    pygame.draw.rect(screen, COLORS[tile], rect)
 
 
 if __name__ == '__main__':
