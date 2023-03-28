@@ -78,6 +78,8 @@ COLORS = (
     )
 
 EVENT_DROP = pygame.USEREVENT + 1
+EVENT_DELAY_CLEAR_ROWS = pygame.USEREVENT + 2
+EVENT_CLEAR_ROWS = pygame.USEREVENT + 3
 
 
 Board = namedtuple('Board', ['tiles'])
@@ -114,6 +116,10 @@ def main():
                     input.add('right')
             if event.type == EVENT_DROP:
                 input.add('drop')
+            if event.type == EVENT_DELAY_CLEAR_ROWS:
+                input.add('delay_clear_rows')
+            if event.type == EVENT_CLEAR_ROWS:
+                input.add('clear_rows')
 
         board, tetromino = update(board, tetromino, input)
 
@@ -130,6 +136,13 @@ def main():
 def update(
         b: Board, t: Tetromino,
         input: set[str]) -> tuple[Board, Tetromino]:
+    if 'clear_rows' in input:
+        b = clear_rows(b, get_full_rows(b))
+        return b, t
+    if 'delay_clear_rows' in input:
+        pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
+        return b, t
+
     tmp_tetromino = t
 
     if 'up' in input:
@@ -150,7 +163,8 @@ def update(
 
         full_rows = get_full_rows(b)
         if len(full_rows):
-            b = clear_rows(b, full_rows)
+            pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
+            pygame.time.set_timer(EVENT_CLEAR_ROWS, 500, True)
 
     return b, t
 
