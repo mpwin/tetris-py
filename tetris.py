@@ -65,6 +65,7 @@ COLOR_YELLOW = (255, 255, 0)
 COLOR_LIME = (0, 255, 0)
 COLOR_PURPLE = (153, 0, 255)
 COLOR_RED = (255, 0, 0)
+COLOR_WHITE = (255, 255, 255)
 
 COLORS = (
     COLOR_BLACK,
@@ -75,6 +76,7 @@ COLORS = (
     COLOR_LIME,
     COLOR_PURPLE,
     COLOR_RED,
+    COLOR_WHITE,
     )
 
 EVENT_DROP = pygame.USEREVENT + 1
@@ -163,6 +165,7 @@ def update(
 
         full_rows = get_full_rows(b)
         if len(full_rows):
+            b = highlight_rows(b, full_rows)
             pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
             pygame.time.set_timer(EVENT_CLEAR_ROWS, 500, True)
 
@@ -268,6 +271,13 @@ def clear_rows(b: Board, rows: frozenset[int]) -> Board:
     tmp_tiles.extend([0] * BOARD_WIDTH * len(rows))
     tmp_tiles.reverse()
     return Board(tmp_tiles)
+
+
+def highlight_rows(b: Board, rows: frozenset[int]) -> Board:
+    for row in rows:
+        for col in range(BOARD_WIDTH):
+            b = board_set_tile(b, row, col, 8)
+    return b
 
 
 def get_full_rows(b: Board) -> frozenset[int]:
