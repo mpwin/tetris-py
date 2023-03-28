@@ -140,7 +140,7 @@ def get_events() -> tuple[frozenset[str], bool]:
 
 def update(
         b: Board, t: Tetromino,
-        events: set[str]) -> tuple[Board, Tetromino]:
+        events: frozenset[str]) -> tuple[Board, Tetromino]:
     if 'clear_rows' in events:
         b = clear_rows(b, get_full_rows(b))
         return b, t
