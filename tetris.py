@@ -148,23 +148,15 @@ def update(
         pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
         return b, t
 
-    tmp_tetromino = t
-
     if 'up' in events:
-        rotation = (t.rotation + 1) % 4
-        tmp_tetromino = tmp_tetromino._replace(rotation=rotation)
+        t = rotate(t, b)
     if 'left' in events:
-        col = t.col - 1
-        tmp_tetromino = tmp_tetromino._replace(col=col)
+        t = move_left(t, b)
     if 'right' in events:
-        col = t.col + 1
-        tmp_tetromino = tmp_tetromino._replace(col=col)
-
-    if tetromino_is_valid(tmp_tetromino, b):
-        t = tmp_tetromino
+        t = move_right(t, b)
 
     if 'down' in events or 'drop' in events:
-        b, t = tetromino_move_down(b, t)
+        b, t = move_down(b, t)
 
         full_rows = get_full_rows(b)
         if len(full_rows):
@@ -231,7 +223,31 @@ def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
                 ]
 
 
-def tetromino_move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
+def rotate(t: Tetromino, b: Board) -> Tetromino:
+    rotation = (t.rotation + 1) % 4
+    tmp_t = t._replace(rotation=rotation)
+    if tetromino_is_valid(tmp_t, b):
+        return tmp_t
+    return t
+
+
+def move_left(t: Tetromino, b: Board) -> Tetromino:
+    col = t.col - 1
+    tmp_t = t._replace(col=col)
+    if tetromino_is_valid(tmp_t, b):
+        return tmp_t
+    return t
+
+
+def move_right(t: Tetromino, b: Board) -> Tetromino:
+    col = t.col + 1
+    tmp_t = t._replace(col=col)
+    if tetromino_is_valid(tmp_t, b):
+        return tmp_t
+    return t
+
+
+def move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
     t = t._replace(row=t.row+1)
 
     if not tetromino_is_valid(t, b):
