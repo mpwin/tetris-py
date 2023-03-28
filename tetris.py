@@ -1,4 +1,5 @@
 from collections import namedtuple
+from enum import Enum
 from random import randint
 
 import pygame
@@ -84,6 +85,16 @@ EVENT_DELAY_CLEAR_ROWS = pygame.USEREVENT + 2
 EVENT_CLEAR_ROWS = pygame.USEREVENT + 3
 
 
+Event = Enum('Event', (
+    'ROTATE',
+    'MOVE_LEFT',
+    'MOVE_RIGHT',
+    'MOVE_DOWN',
+    'FORCE_DOWN',
+    'HIGHLIGHT_ROWS',
+    'CLEAR_ROWS',
+    ))
+
 Board = namedtuple('Board', ['tiles'])
 Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
 
@@ -113,26 +124,26 @@ def main():
     pygame.quit()
 
 
-def get_events() -> tuple[frozenset[str], bool]:
+def get_events() -> tuple[frozenset[Event], bool]:
     events, running = set(), True
     for event in pygame.event.get():
         if event.type == EVENT_DROP:
-            events.add('drop')
+            events.add(Event.FORCE_DOWN)
         if event.type == EVENT_DELAY_CLEAR_ROWS:
-            events.add('delay_clear_rows')
+            events.add(Event.HIGHLIGHT_ROWS)
         if event.type == EVENT_CLEAR_ROWS:
-            events.add('clear_rows')
+            events.add(Event.CLEAR_ROWS)
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                events.add('up')
+                events.add(Event.ROTATE)
             if event.key == pygame.K_DOWN:
-                events.add('down')
+                events.add(Event.MOVE_DOWN)
             if event.key == pygame.K_LEFT:
-                events.add('left')
+                events.add(Event.MOVE_LEFT)
             if event.key == pygame.K_RIGHT:
-                events.add('right')
+                events.add(Event.MOVE_RIGHT)
             if event.key == pygame.K_ESCAPE:
                 running = False
     return frozenset(events), running
@@ -140,22 +151,22 @@ def get_events() -> tuple[frozenset[str], bool]:
 
 def update(
         b: Board, t: Tetromino,
-        events: frozenset[str]) -> tuple[Board, Tetromino]:
-    if 'clear_rows' in events:
+        events: frozenset[Event]) -> tuple[Board, Tetromino]:
+    if Event.CLEAR_ROWS in events:
         b = clear_rows(b, get_full_rows(b))
         return b, t
-    if 'delay_clear_rows' in events:
+    if Event.HIGHLIGHT_ROWS in events:
         pygame.event.post(pygame.event.Event(EVENT_DELAY_CLEAR_ROWS))
         return b, t
 
-    if 'up' in events:
+    if Event.ROTATE in events:
         t = rotate(t, b)
-    if 'left' in events:
+    if Event.MOVE_LEFT in events:
         t = move_left(t, b)
-    if 'right' in events:
+    if Event.MOVE_RIGHT in events:
         t = move_right(t, b)
 
-    if 'down' in events or 'drop' in events:
+    if Event.MOVE_DOWN in events or Event.FORCE_DOWN in events:
         b, t = move_down(b, t)
 
         full_rows = get_full_rows(b)
