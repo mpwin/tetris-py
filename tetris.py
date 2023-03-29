@@ -96,6 +96,11 @@ PygameEvent = Enum('PygameEvent', (
     'CLEAR_ROWS',
     ), start=pygame.USEREVENT+1)
 
+State = Enum('State', (
+    'PLAY',
+    'PAUSE',
+    ))
+
 Board = namedtuple('Board', ['tiles'])
 Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
 
