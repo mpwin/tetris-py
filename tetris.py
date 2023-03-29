@@ -86,6 +86,7 @@ Event = Enum('Event', (
     'MOVE_LEFT',
     'MOVE_RIGHT',
     'MOVE_DOWN',
+    'DROP',
     'FORCE_DOWN',
     'CLEAR_ROWS',
     ))
@@ -141,6 +142,8 @@ def get_events() -> tuple[frozenset[Event], bool]:
                 events.add(Event.MOVE_LEFT)
             if event.key == pygame.K_RIGHT:
                 events.add(Event.MOVE_RIGHT)
+            if event.key == pygame.K_SPACE:
+                events.add(Event.DROP)
             if event.key == pygame.K_ESCAPE:
                 running = False
     return frozenset(events), running
@@ -162,15 +165,16 @@ def update(
         t = move_left(t, b)
     if Event.MOVE_RIGHT in events:
         t = move_right(t, b)
-
     if Event.MOVE_DOWN in events or Event.FORCE_DOWN in events:
         b, t = move_down(b, t)
+    if Event.DROP in events:
+        b, t = drop(b, t)
 
-        full_rows = get_full_rows(b)
-        if len(full_rows):
-            b = highlight_rows(b, full_rows)
-            b = b._replace(state=State.HIGHLIGHT_ROWS)
-            pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
+    full_rows = get_full_rows(b)
+    if len(full_rows):
+        b = highlight_rows(b, full_rows)
+        b = b._replace(state=State.HIGHLIGHT_ROWS)
+        pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
 
     return b, t
 
@@ -297,6 +301,14 @@ def move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
         return b, tetromino_create()
     else:
         return b, t
+
+
+def drop(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
+    while tetromino_is_valid(t, b):
+        t = t._replace(row=t.row+1)
+    t = t._replace(row=t.row-1)
+    b = board_update(b, t)
+    return b, tetromino_create()
 
 
 def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
