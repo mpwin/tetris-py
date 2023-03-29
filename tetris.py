@@ -101,7 +101,7 @@ State = Enum('State', (
     'PAUSE',
     ))
 
-Board = namedtuple('Board', ['tiles'])
+Board = namedtuple('Board', ['tiles', 'state'])
 Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
 
 
@@ -112,7 +112,7 @@ def main():
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     clock = pygame.time.Clock()
 
-    board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT)
+    board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT, State.PLAY)
     tetromino = tetromino_create()
     running = True
 
@@ -316,7 +316,7 @@ def clear_rows(b: Board, rows: frozenset[int]) -> Board:
             tmp_tiles.append(board_get_tile(b, row, col))
     tmp_tiles.extend([0] * BOARD_WIDTH * len(rows))
     tmp_tiles.reverse()
-    return Board(tmp_tiles)
+    return b._replace(tiles=tmp_tiles)
 
 
 def highlight_rows(b: Board, rows: frozenset[int]) -> Board:
