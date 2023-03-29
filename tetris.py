@@ -203,7 +203,8 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
 
     screen.fill(COLOR_BLACK)
     draw_board()
-    draw_tetromino()
+    if b.state == State.PLAY:
+        draw_tetromino()
     pygame.display.flip()
 
 
