@@ -117,12 +117,7 @@ def main():
     while running:
         events, running = get_events()
         board, tetromino = update(board, tetromino, events)
-
-        screen.fill(COLOR_BLACK)
-        draw_board(screen, board)
-        draw_tetromino(screen, tetromino)
-        pygame.display.flip()
-
+        draw(screen, board, tetromino)
         clock.tick(60)
 
     pygame.quit()
@@ -178,6 +173,38 @@ def update(
             pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
 
     return b, t
+
+
+def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
+
+    def draw_board() -> None:
+        for row in range(0, BOARD_HEIGHT):
+            for col in range(0, BOARD_WIDTH):
+                tile = board_get_tile(b, row, col)
+                if tile > 0:
+                    draw_tile(tile, row, col)
+
+    def draw_tetromino() -> None:
+        size = TETROMINOES[t.shape]['size']
+        for row in range(0, size):
+            for col in range(0, size):
+                tile = tetromino_get_tile(t, row, col)
+                if tile > 0:
+                    draw_tile(tile, row + t.row, col + t.col)
+
+    def draw_tile(tile: int, row: int, col: int) -> None:
+        rect = pygame.Rect(
+            col * GRID_SIZE, # x
+            row * GRID_SIZE, # y
+            GRID_SIZE,
+            GRID_SIZE,
+            )
+        pygame.draw.rect(screen, COLORS[tile], rect)
+
+    screen.fill(COLOR_BLACK)
+    draw_board()
+    draw_tetromino()
+    pygame.display.flip()
 
 
 def board_get_tile(b: Board, row: int, col: int) -> int:
@@ -325,33 +352,6 @@ def is_row_full(b: Board, row: int) -> bool:
         if not board_get_tile(b, row, col):
             return False
     return True
-
-
-def draw_board(screen: pygame.Surface, b: Board) -> None:
-    for row in range(0, BOARD_HEIGHT):
-        for col in range(0, BOARD_WIDTH):
-            tile = board_get_tile(b, row, col)
-            if tile > 0:
-                draw_tile(screen, tile, row, col)
-
-
-def draw_tetromino(screen: pygame.Surface, t: Tetromino) -> None:
-    size = TETROMINOES[t.shape]['size']
-    for row in range(0, size):
-        for col in range(0, size):
-            tile = tetromino_get_tile(t, row, col)
-            if tile > 0:
-                draw_tile(screen, tile, row + t.row, col + t.col)
-
-
-def draw_tile(screen: pygame.Surface, tile: int, row: int, col: int) -> None:
-    rect = pygame.Rect(
-        col * GRID_SIZE, # x
-        row * GRID_SIZE, # y
-        GRID_SIZE,
-        GRID_SIZE,
-        )
-    pygame.draw.rect(screen, COLORS[tile], rect)
 
 
 if __name__ == '__main__':
