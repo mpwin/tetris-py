@@ -87,18 +87,16 @@ Event = Enum('Event', (
     'MOVE_RIGHT',
     'MOVE_DOWN',
     'FORCE_DOWN',
-    'HIGHLIGHT_ROWS',
     'CLEAR_ROWS',
     ))
 PygameEvent = Enum('PygameEvent', (
     'FORCE_DOWN',
-    'HIGHLIGHT_ROWS',
     'CLEAR_ROWS',
     ), start=pygame.USEREVENT+1)
 
 State = Enum('State', (
     'PLAY',
-    'PAUSE',
+    'HIGHLIGHT_ROWS',
     ))
 
 Board = namedtuple('Board', ['tiles', 'state'])
@@ -135,8 +133,6 @@ def get_events() -> tuple[frozenset[Event], bool]:
     for event in pygame.event.get():
         if event.type == PygameEvent.FORCE_DOWN.value:
             events.add(Event.FORCE_DOWN)
-        if event.type == PygameEvent.HIGHLIGHT_ROWS.value:
-            events.add(Event.HIGHLIGHT_ROWS)
         if event.type == PygameEvent.CLEAR_ROWS.value:
             events.add(Event.CLEAR_ROWS)
         if event.type == pygame.QUIT:
@@ -160,12 +156,9 @@ def update(
         events: frozenset[Event]) -> tuple[Board, Tetromino]:
     if Event.CLEAR_ROWS in events:
         b = clear_rows(b, get_full_rows(b))
+        b = b._replace(state=State.PLAY)
         return b, t
-    if Event.HIGHLIGHT_ROWS in events:
-        pygame.event.post(
-            pygame.event.Event(
-                PygameEvent.HIGHLIGHT_ROWS.value
-            ))
+    if b.state == State.HIGHLIGHT_ROWS:
         return b, t
 
     if Event.ROTATE in events:
@@ -181,15 +174,8 @@ def update(
         full_rows = get_full_rows(b)
         if len(full_rows):
             b = highlight_rows(b, full_rows)
-            pygame.event.post(
-                pygame.event.Event(
-                    PygameEvent.HIGHLIGHT_ROWS.value
-                ))
-            pygame.time.set_timer(
-                PygameEvent.CLEAR_ROWS.value,
-                500,
-                True,
-                )
+            b = b._replace(state=State.HIGHLIGHT_ROWS)
+            pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
 
     return b, t
 
