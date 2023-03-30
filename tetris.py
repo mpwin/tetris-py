@@ -183,15 +183,15 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
     def draw_board(color: Optional[Color] = None) -> None:
         for row in range(0, BOARD_HEIGHT):
             for col in range(0, BOARD_WIDTH):
-                tile = board_get_tile(b, row, col)
+                tile = get_tile(b.tiles, row, col)
                 if tile > 0:
                     draw_tile(row, col, color or TILE_COLORS[tile])
 
     def draw_tetromino() -> None:
-        size = SHAPES[t.shape].size
+        tiles, size = SHAPES[t.shape]
         for row in range(0, size):
             for col in range(0, size):
-                tile = tetromino_get_tile(t, row, col)
+                tile = get_tile(tiles, row, col, size, t.rotation)
                 if tile > 0:
                     draw_tile(row + t.row, col + t.col, TILE_COLORS[tile])
 
@@ -224,10 +224,6 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
     pygame.display.flip()
 
 
-def board_get_tile(b: Board, row: int, col: int) -> int:
-    return b.tiles[row * BOARD_WIDTH + col]
-
-
 def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
     tmp_tiles = list(b.tiles)
     tmp_tiles[row * BOARD_WIDTH + col] = val
@@ -235,11 +231,11 @@ def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
 
 
 def board_update(b: Board, t: Tetromino) -> Board:
-    size = SHAPES[t.shape].size
+    tiles, size = SHAPES[t.shape]
 
     for row in range(0, size):
         for col in range(0, size):
-            val = tetromino_get_tile(t, row, col)
+            val = get_tile(tiles, row, col, size, t.rotation)
             if val > 0:
                 b_row = row + t.row
                 b_col = col + t.col
@@ -248,28 +244,28 @@ def board_update(b: Board, t: Tetromino) -> Board:
     return b
 
 
-def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
-    data = SHAPES[t.shape].tiles
-    size = SHAPES[t.shape].size
-
-    match t.rotation:
+def get_tile(
+        tiles: tuple[int], row: int, col: int,
+        size: Optional[int] = BOARD_WIDTH,
+        rotation: Optional[int] = 0) -> int:
+    match rotation:
         case 0:
-            return data[
+            return tiles[
                 row *
                 size + col
                 ]
         case 1:
-            return data[
+            return tiles[
                 (size - col - 1) *
                 size + row
                 ]
         case 2:
-            return data[
+            return tiles[
                 (size - row - 1) *
                 size + (size - col - 1)
                 ]
         case 3:
-            return data[
+            return tiles[
                 col *
                 size + (size - row - 1)
                 ]
@@ -327,11 +323,11 @@ def drop(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
 
 
 def is_valid(b: Board, t: Tetromino) -> bool:
-    size = SHAPES[t.shape].size
+    tiles, size = SHAPES[t.shape]
 
     for row in range(0, size):
         for col in range(0, size):
-            val = tetromino_get_tile(t, row, col)
+            val = get_tile(tiles, row, col, size, t.rotation)
             if val > 0:
                 b_row = row + t.row
                 b_col = col + t.col
@@ -342,7 +338,7 @@ def is_valid(b: Board, t: Tetromino) -> bool:
                     return False
                 if b_col >= BOARD_WIDTH:
                     return False
-                if board_get_tile(b, b_row, b_col):
+                if get_tile(b.tiles, b_row, b_col):
                     return False
 
     return True
@@ -353,7 +349,7 @@ def check_full_rows(b: Board) -> Board:
 
     def is_row_full(b: Board, row: int) -> bool:
         for col in range(BOARD_WIDTH):
-            if not board_get_tile(b, row, col):
+            if not get_tile(b.tiles, row, col):
                 return False
         return True
 
@@ -373,7 +369,7 @@ def clear_full_rows(b: Board, rows: frozenset[int]) -> Board:
         if row in rows:
             continue
         for col in reversed(range(BOARD_WIDTH)):
-            tmp_tiles.append(board_get_tile(b, row, col))
+            tmp_tiles.append(get_tile(b.tiles, row, col))
     tmp_tiles.extend([0] * BOARD_WIDTH * len(rows))
     tmp_tiles.reverse()
     return b._replace(tiles=tmp_tiles, state=State.PLAY, full_rows=())
