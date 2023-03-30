@@ -180,7 +180,7 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
             for col in range(0, BOARD_WIDTH):
                 tile = board_get_tile(b, row, col)
                 if tile > 0:
-                    draw_tile(tile, row, col)
+                    draw_tile(row, col, COLORS[tile])
 
     def draw_tetromino() -> None:
         size = TETROMINOES[t.shape]['size']
@@ -188,16 +188,16 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
             for col in range(0, size):
                 tile = tetromino_get_tile(t, row, col)
                 if tile > 0:
-                    draw_tile(tile, row + t.row, col + t.col)
+                    draw_tile(row + t.row, col + t.col, COLORS[tile])
 
-    def draw_tile(tile: int, row: int, col: int) -> None:
+    def draw_tile(row: int, col: int, color: tuple[int]) -> None:
         rect = pygame.Rect(
             col * GRID_SIZE, # x
             row * GRID_SIZE, # y
             GRID_SIZE,
             GRID_SIZE,
             )
-        pygame.draw.rect(screen, COLORS[tile], rect)
+        pygame.draw.rect(screen, color, rect)
 
     screen.fill(COLOR_BLACK)
     draw_board()
