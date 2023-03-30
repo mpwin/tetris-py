@@ -13,50 +13,52 @@ GRID_SIZE = 40
 SCREEN_WIDTH = BOARD_WIDTH * GRID_SIZE
 SCREEN_HEIGHT = BOARD_HEIGHT * GRID_SIZE
 
-TETROMINO_I = (
+
+Shape = namedtuple('Shape', ['tiles', 'size'])
+
+SHAPE_I = Shape((
     0, 0, 0, 0,
     1, 1, 1, 1,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    )
-TETROMINO_J = (
+    ), 4)
+SHAPE_J = Shape((
     2, 0, 0,
     2, 2, 2,
     0, 0, 0,
-    )
-TETROMINO_L = (
+    ), 3)
+SHAPE_L = Shape((
     0, 0, 3,
     3, 3, 3,
     0, 0, 0,
-    )
-TETROMINO_O = (
+    ), 3)
+SHAPE_O = Shape((
     4, 4,
     4, 4,
-    )
-TETROMINO_S = (
+    ), 2)
+SHAPE_S = Shape((
     0, 5, 5,
     5, 5, 0,
     0, 0, 0,
-    )
-TETROMINO_T = (
+    ), 3)
+SHAPE_T = Shape((
     0, 6, 0,
     6, 6, 6,
     0, 0, 0,
-    )
-TETROMINO_Z = (
+    ), 3)
+SHAPE_Z = Shape((
     7, 7, 0,
     0, 7, 7,
     0, 0, 0,
-    )
-
-TETROMINOES = (
-    dict(data=TETROMINO_I, size=4),
-    dict(data=TETROMINO_J, size=3),
-    dict(data=TETROMINO_L, size=3),
-    dict(data=TETROMINO_O, size=2),
-    dict(data=TETROMINO_S, size=3),
-    dict(data=TETROMINO_T, size=3),
-    dict(data=TETROMINO_Z, size=3),
+    ), 3)
+SHAPES = (
+    SHAPE_I,
+    SHAPE_J,
+    SHAPE_L,
+    SHAPE_O,
+    SHAPE_S,
+    SHAPE_T,
+    SHAPE_Z,
     )
 
 
@@ -186,7 +188,7 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
                     draw_tile(row, col, color or TILE_COLORS[tile])
 
     def draw_tetromino() -> None:
-        size = TETROMINOES[t.shape]['size']
+        size = SHAPES[t.shape].size
         for row in range(0, size):
             for col in range(0, size):
                 tile = tetromino_get_tile(t, row, col)
@@ -233,7 +235,7 @@ def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
 
 
 def board_update(b: Board, t: Tetromino) -> Board:
-    size = TETROMINOES[t.shape]['size']
+    size = SHAPES[t.shape].size
 
     for row in range(0, size):
         for col in range(0, size):
@@ -247,8 +249,8 @@ def board_update(b: Board, t: Tetromino) -> Board:
 
 
 def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
-    data = TETROMINOES[t.shape]['data']
-    size = TETROMINOES[t.shape]['size']
+    data = SHAPES[t.shape].tiles
+    size = SHAPES[t.shape].size
 
     match t.rotation:
         case 0:
@@ -274,9 +276,9 @@ def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
 
 
 def create_tetromino() -> Tetromino:
-    shape = randint(0, len(TETROMINOES)-1)
+    shape = randint(0, len(SHAPES)-1)
     row = 0
-    col = (BOARD_WIDTH // 2) - (TETROMINOES[shape]['size'] // 2)
+    col = (BOARD_WIDTH // 2) - (SHAPES[shape].size // 2)
     rotation = randint(0, 3)
     return Tetromino(shape, row, col, rotation)
 
@@ -325,7 +327,7 @@ def drop(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
 
 
 def is_valid(b: Board, t: Tetromino) -> bool:
-    size = TETROMINOES[t.shape]['size']
+    size = SHAPES[t.shape].size
 
     for row in range(0, size):
         for col in range(0, size):
