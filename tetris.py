@@ -88,7 +88,7 @@ PygameEvent = Enum('PygameEvent', (
 
 State = Enum('State', (
     'PLAY',
-    'HIGHLIGHT_ROWS',
+    'FULL_ROWS',
     'GAME_OVER',
     ))
 
@@ -148,7 +148,7 @@ def update(
         b = clear_rows(b, b.full_rows)
         b = b._replace(state=State.PLAY, full_rows=())
         return b, t
-    if b.state in (State.HIGHLIGHT_ROWS, State.GAME_OVER):
+    if b.state in (State.FULL_ROWS, State.GAME_OVER):
         return b, t
 
     if Event.ROTATE in events:
@@ -164,7 +164,7 @@ def update(
 
     b = check_full_rows(b)
 
-    if b.state == State.HIGHLIGHT_ROWS:
+    if b.state == State.FULL_ROWS:
         b = highlight_rows(b, b.full_rows)
         pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
     elif not tetromino_is_valid(t, b):
@@ -341,10 +341,7 @@ def check_full_rows(b: Board) -> Board:
             rows.add(row)
 
     if len(rows):
-        return b._replace(
-            state=State.HIGHLIGHT_ROWS,
-            full_rows=frozenset(rows),
-            )
+        return b._replace(state=State.FULL_ROWS, full_rows=frozenset(rows))
     else:
         return b
 
