@@ -374,6 +374,7 @@ def clear_full_rows(b: Board, rows: frozenset[int]) -> Board:
 
 def check_game_over(b: Board, t: Tetromino) -> Board:
     if not is_valid(b, t):
+        b = board_update(b, t)
         b = b._replace(state=State.GAME_OVER)
     return b
 
