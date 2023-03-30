@@ -59,18 +59,21 @@ TETROMINOES = (
     dict(data=TETROMINO_Z, size=3),
     )
 
-COLOR_BLACK = (0, 0, 0)
-COLOR_GRAY = (128, 128, 128)
-COLOR_WHITE = (255, 255, 255)
+
+Color = namedtuple('Color', ['name', 'rgb'])
+
+COLOR_BLACK = Color('Black', (0, 0, 0))
+COLOR_GRAY = Color('Gray', (128, 128, 128))
+COLOR_WHITE = Color('White', (255, 255, 255))
 COLORS = (
-    COLOR_BLACK,        # [0] Black
-    (0, 255, 255),      # [1] Aqua
-    (0, 0, 255),        # [2] Blue
-    (255, 170, 0),      # [3] Orange
-    (255, 255, 0),      # [4] Yellow
-    (0, 255, 0),        # [5] Lime
-    (153, 0, 255),      # [6] Purple
-    (255, 0, 0),        # [7] Red
+    COLOR_BLACK,
+    Color('Aqua', (0, 255, 255)),
+    Color('Blue', (0, 0, 255)),
+    Color('Orange', (255, 170, 0)),
+    Color('Yellow', (255, 255, 0)),
+    Color('Lime', (0, 255, 0)),
+    Color('Purple', (153, 0, 255)),
+    Color('Red', (255, 0, 0)),
     )
 
 
@@ -175,7 +178,7 @@ def update(
 
 def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
 
-    def draw_board(color: Optional[tuple[int]] = None) -> None:
+    def draw_board(color: Optional[Color] = None) -> None:
         for row in range(0, BOARD_HEIGHT):
             for col in range(0, BOARD_WIDTH):
                 tile = board_get_tile(b, row, col)
@@ -190,21 +193,21 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
                 if tile > 0:
                     draw_tile(row + t.row, col + t.col, COLORS[tile])
 
-    def draw_tile(row: int, col: int, color: tuple[int]) -> None:
+    def draw_tile(row: int, col: int, color: Color) -> None:
         rect = pygame.Rect(
             col * GRID_SIZE, # x
             row * GRID_SIZE, # y
             GRID_SIZE,
             GRID_SIZE,
             )
-        pygame.draw.rect(screen, color, rect)
+        pygame.draw.rect(screen, color.rgb, rect)
 
     def highlight_rows():
         for row in b.full_rows:
             for col in range(BOARD_WIDTH):
                 draw_tile(row, col, COLOR_WHITE)
 
-    screen.fill(COLOR_BLACK)
+    screen.fill(COLOR_BLACK.rgb)
 
     match b.state:
         case State.PLAY:
