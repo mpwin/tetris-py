@@ -187,13 +187,21 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
                 if tile > 0:
                     draw_tile(row, col, color or TILE_COLORS[tile])
 
-    def draw_tetromino() -> None:
+    def draw_tetromino(t: Tetromino, shadow: Optional[bool] = False) -> None:
         tiles, size = SHAPES[t.shape]
         for row in range(0, size):
             for col in range(0, size):
                 tile = get_tile(tiles, row, col, size, t.rotation)
+                color = COLOR_GRAY if shadow else TILE_COLORS[tile]
                 if tile > 0:
-                    draw_tile(row + t.row, col + t.col, TILE_COLORS[tile])
+                    draw_tile(row + t.row, col + t.col, color)
+
+    def draw_tetromino_shadow() -> None:
+        tmp_t = t
+        while is_valid(b, tmp_t):
+            tmp_t = tmp_t._replace(row=tmp_t.row+1)
+        tmp_t = tmp_t._replace(row=tmp_t.row-1)
+        draw_tetromino(tmp_t, True)
 
     def draw_tile(row: int, col: int, color: Color) -> None:
         rect = pygame.Rect(
@@ -214,7 +222,8 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
     match b.state:
         case State.PLAY:
             draw_board()
-            draw_tetromino()
+            draw_tetromino_shadow()
+            draw_tetromino(t)
         case State.FULL_ROWS:
             draw_board()
             highlight_rows()
