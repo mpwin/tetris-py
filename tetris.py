@@ -65,7 +65,7 @@ Color = namedtuple('Color', ['name', 'rgb'])
 COLOR_BLACK = Color('Black', (0, 0, 0))
 COLOR_GRAY = Color('Gray', (128, 128, 128))
 COLOR_WHITE = Color('White', (255, 255, 255))
-COLORS = (
+TILE_COLORS = (
     COLOR_BLACK,
     Color('Aqua', (0, 255, 255)),
     Color('Blue', (0, 0, 255)),
@@ -183,7 +183,7 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
             for col in range(0, BOARD_WIDTH):
                 tile = board_get_tile(b, row, col)
                 if tile > 0:
-                    draw_tile(row, col, color or COLORS[tile])
+                    draw_tile(row, col, color or TILE_COLORS[tile])
 
     def draw_tetromino() -> None:
         size = TETROMINOES[t.shape]['size']
@@ -191,7 +191,7 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
             for col in range(0, size):
                 tile = tetromino_get_tile(t, row, col)
                 if tile > 0:
-                    draw_tile(row + t.row, col + t.col, COLORS[tile])
+                    draw_tile(row + t.row, col + t.col, TILE_COLORS[tile])
 
     def draw_tile(row: int, col: int, color: Color) -> None:
         rect = pygame.Rect(
