@@ -108,7 +108,7 @@ def main():
     clock = pygame.time.Clock()
 
     board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT, State.PLAY, ())
-    tetromino = tetromino_create()
+    tetromino = create_tetromino()
     running = True
 
     while running:
@@ -246,11 +246,6 @@ def board_update(b: Board, t: Tetromino) -> Board:
     return b
 
 
-def tetromino_create() -> Tetromino:
-    shape = randint(0, len(TETROMINOES) - 1)
-    return Tetromino(shape, 0, 0, 0)
-
-
 def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
     data = TETROMINOES[t.shape]['data']
     size = TETROMINOES[t.shape]['size']
@@ -276,6 +271,14 @@ def tetromino_get_tile(t: Tetromino, row: int, col: int) -> int:
                 col *
                 size + (size - row - 1)
                 ]
+
+
+def create_tetromino() -> Tetromino:
+    shape = randint(0, len(TETROMINOES)-1)
+    row = 0
+    col = (BOARD_WIDTH // 2) - (TETROMINOES[shape]['size'] // 2)
+    rotation = randint(0, 3)
+    return Tetromino(shape, row, col, rotation)
 
 
 def rotate(t: Tetromino, b: Board) -> Tetromino:
@@ -308,7 +311,7 @@ def move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
     if not is_valid(b, t):
         t = t._replace(row=t.row-1)
         b = board_update(b, t)
-        return b, tetromino_create()
+        return b, create_tetromino()
     else:
         return b, t
 
@@ -318,7 +321,7 @@ def drop(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
         t = t._replace(row=t.row+1)
     t = t._replace(row=t.row-1)
     b = board_update(b, t)
-    return b, tetromino_create()
+    return b, create_tetromino()
 
 
 def is_valid(b: Board, t: Tetromino) -> bool:
