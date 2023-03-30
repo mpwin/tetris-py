@@ -224,26 +224,6 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
     pygame.display.flip()
 
 
-def board_set_tile(b: Board, row: int, col: int, val: int) -> Board:
-    tmp_tiles = list(b.tiles)
-    tmp_tiles[row * BOARD_WIDTH + col] = val
-    return b._replace(tiles=tmp_tiles)
-
-
-def board_update(b: Board, t: Tetromino) -> Board:
-    tiles, size = SHAPES[t.shape]
-
-    for row in range(0, size):
-        for col in range(0, size):
-            val = get_tile(tiles, row, col, size, t.rotation)
-            if val > 0:
-                b_row = row + t.row
-                b_col = col + t.col
-                b = board_set_tile(b, b_row, b_col, val)
-
-    return b
-
-
 def get_tile(
         tiles: tuple[int], row: int, col: int,
         size: Optional[int] = BOARD_WIDTH,
@@ -279,6 +259,26 @@ def create_tetromino() -> Tetromino:
     return Tetromino(shape, row, col, rotation)
 
 
+def lock_tetromino(b: Board, t: Tetromino) -> Board:
+
+    def set_tile(row: int, col: int, val: int) -> Board:
+        tmp_tiles = list(b.tiles)
+        tmp_tiles[row * BOARD_WIDTH + col] = val
+        return b._replace(tiles=tmp_tiles)
+
+    tiles, size = SHAPES[t.shape]
+
+    for row in range(0, size):
+        for col in range(0, size):
+            tile = get_tile(tiles, row, col, size, t.rotation)
+            if tile > 0:
+                b_row = row + t.row
+                b_col = col + t.col
+                b = set_tile(b_row, b_col, tile)
+
+    return b
+
+
 def rotate(t: Tetromino, b: Board) -> Tetromino:
     rotation = (t.rotation + 1) % 4
     tmp_t = t._replace(rotation=rotation)
@@ -308,7 +308,7 @@ def move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
 
     if not is_valid(b, t):
         t = t._replace(row=t.row-1)
-        b = board_update(b, t)
+        b = lock_tetromino(b, t)
         return b, create_tetromino()
     else:
         return b, t
@@ -318,7 +318,7 @@ def drop(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
     while is_valid(b, t):
         t = t._replace(row=t.row+1)
     t = t._replace(row=t.row-1)
-    b = board_update(b, t)
+    b = lock_tetromino(b, t)
     return b, create_tetromino()
 
 
@@ -377,7 +377,7 @@ def clear_full_rows(b: Board, rows: frozenset[int]) -> Board:
 
 def check_game_over(b: Board, t: Tetromino) -> Board:
     if not is_valid(b, t):
-        b = board_update(b, t)
+        b = lock_tetromino(b, t)
         b = b._replace(state=State.GAME_OVER)
     return b
 
