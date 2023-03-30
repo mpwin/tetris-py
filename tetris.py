@@ -98,6 +98,7 @@ PygameEvent = Enum('PygameEvent', (
 State = Enum('State', (
     'PLAY',
     'HIGHLIGHT_ROWS',
+    'GAME_OVER',
     ))
 
 Board = namedtuple('Board', ['tiles', 'state'])
@@ -156,7 +157,7 @@ def update(
         b = clear_rows(b, get_full_rows(b))
         b = b._replace(state=State.PLAY)
         return b, t
-    if b.state == State.HIGHLIGHT_ROWS:
+    if b.state in (State.HIGHLIGHT_ROWS, State.GAME_OVER):
         return b, t
 
     if Event.ROTATE in events:
@@ -175,6 +176,8 @@ def update(
         b = highlight_rows(b, full_rows)
         b = b._replace(state=State.HIGHLIGHT_ROWS)
         pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
+    elif not tetromino_is_valid(t, b):
+        b = b._replace(state=State.GAME_OVER)
 
     return b, t
 
@@ -207,7 +210,7 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
 
     screen.fill(COLOR_BLACK)
     draw_board()
-    if b.state == State.PLAY:
+    if b.state in (State.PLAY, State.GAME_OVER):
         draw_tetromino()
     pygame.display.flip()
 
