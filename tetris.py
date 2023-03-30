@@ -260,13 +260,12 @@ def create_tetromino() -> Tetromino:
 
 
 def lock_tetromino(b: Board, t: Tetromino) -> Board:
+    tiles, size = SHAPES[t.shape]
 
     def set_tile(row: int, col: int, val: int) -> Board:
         tmp_tiles = list(b.tiles)
         tmp_tiles[row * BOARD_WIDTH + col] = val
         return b._replace(tiles=tmp_tiles)
-
-    tiles, size = SHAPES[t.shape]
 
     for row in range(0, size):
         for col in range(0, size):
@@ -305,13 +304,11 @@ def move_right(t: Tetromino, b: Board) -> Tetromino:
 
 def move_down(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
     t = t._replace(row=t.row+1)
-
     if not is_valid(b, t):
         t = t._replace(row=t.row-1)
         b = lock_tetromino(b, t)
         return b, create_tetromino()
-    else:
-        return b, t
+    return b, t
 
 
 def drop(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
@@ -324,14 +321,12 @@ def drop(b: Board, t: Tetromino) -> tuple[Board, Tetromino]:
 
 def is_valid(b: Board, t: Tetromino) -> bool:
     tiles, size = SHAPES[t.shape]
-
     for row in range(0, size):
         for col in range(0, size):
-            val = get_tile(tiles, row, col, size, t.rotation)
-            if val > 0:
+            tile = get_tile(tiles, row, col, size, t.rotation)
+            if tile > 0:
                 b_row = row + t.row
                 b_col = col + t.col
-
                 if b_row >= BOARD_HEIGHT:
                     return False
                 if b_col < 0:
@@ -340,7 +335,6 @@ def is_valid(b: Board, t: Tetromino) -> bool:
                     return False
                 if get_tile(b.tiles, b_row, b_col):
                     return False
-
     return True
 
 
