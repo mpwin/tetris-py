@@ -168,7 +168,7 @@ def update(
     b = check_full_rows(b)
 
     if b.state == State.FULL_ROWS:
-        pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
+        pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 100, True)
         return b, t
 
     b = check_game_over(b, t)
