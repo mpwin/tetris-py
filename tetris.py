@@ -167,8 +167,9 @@ def update(
 
     if b.state == State.FULL_ROWS:
         pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
-    elif not is_valid(b, t):
-        b = b._replace(state=State.GAME_OVER)
+        return b, t
+
+    b = check_game_over(b, t)
 
     return b, t
 
@@ -369,6 +370,12 @@ def clear_full_rows(b: Board, rows: frozenset[int]) -> Board:
     tmp_tiles.extend([0] * BOARD_WIDTH * len(rows))
     tmp_tiles.reverse()
     return b._replace(tiles=tmp_tiles, state=State.PLAY, full_rows=())
+
+
+def check_game_over(b: Board, t: Tetromino) -> Board:
+    if not is_valid(b, t):
+        b = b._replace(state=State.GAME_OVER)
+    return b
 
 
 if __name__ == '__main__':
