@@ -60,6 +60,7 @@ TETROMINOES = (
     )
 
 COLOR_BLACK = (0, 0, 0)
+COLOR_GRAY = (128, 128, 128)
 COLOR_WHITE = (255, 255, 255)
 COLORS = (
     COLOR_BLACK,        # [0] Black
@@ -213,7 +214,7 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
             draw_board()
             highlight_rows()
         case State.GAME_OVER:
-            draw_board(COLOR_WHITE)
+            draw_board(COLOR_GRAY)
 
     pygame.display.flip()
 
