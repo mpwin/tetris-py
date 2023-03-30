@@ -92,7 +92,7 @@ State = Enum('State', (
     'GAME_OVER',
     ))
 
-Board = namedtuple('Board', ['tiles', 'state'])
+Board = namedtuple('Board', ['tiles', 'state', 'full_rows'])
 Tetromino = namedtuple('Tetromino', ['shape', 'row', 'col', 'rotation'])
 
 
@@ -103,7 +103,7 @@ def main():
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     clock = pygame.time.Clock()
 
-    board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT, State.PLAY)
+    board = Board([0] * BOARD_WIDTH * BOARD_HEIGHT, State.PLAY, ())
     tetromino = tetromino_create()
     running = True
 
@@ -145,8 +145,8 @@ def update(
         b: Board, t: Tetromino,
         events: frozenset[Event]) -> tuple[Board, Tetromino]:
     if Event.CLEAR_ROWS in events:
-        b = clear_rows(b, get_full_rows(b))
-        b = b._replace(state=State.PLAY)
+        b = clear_rows(b, b.full_rows)
+        b = b._replace(state=State.PLAY, full_rows=())
         return b, t
     if b.state in (State.HIGHLIGHT_ROWS, State.GAME_OVER):
         return b, t
@@ -162,10 +162,10 @@ def update(
     if Event.DROP in events:
         b, t = drop(b, t)
 
-    full_rows = get_full_rows(b)
-    if len(full_rows):
-        b = highlight_rows(b, full_rows)
-        b = b._replace(state=State.HIGHLIGHT_ROWS)
+    b = check_full_rows(b)
+
+    if b.state == State.HIGHLIGHT_ROWS:
+        b = highlight_rows(b, b.full_rows)
         pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
     elif not tetromino_is_valid(t, b):
         b = b._replace(state=State.GAME_OVER)
@@ -327,6 +327,28 @@ def tetromino_is_valid(t: Tetromino, b: Board) -> bool:
     return True
 
 
+def check_full_rows(b: Board) -> Board:
+    rows = set()
+
+    def is_row_full(b: Board, row: int) -> bool:
+        for col in range(BOARD_WIDTH):
+            if not board_get_tile(b, row, col):
+                return False
+        return True
+
+    for row in range(BOARD_HEIGHT):
+        if is_row_full(b, row):
+            rows.add(row)
+
+    if len(rows):
+        return b._replace(
+            state=State.HIGHLIGHT_ROWS,
+            full_rows=frozenset(rows),
+            )
+    else:
+        return b
+
+
 def clear_rows(b: Board, rows: frozenset[int]) -> Board:
     tmp_tiles = []
     for row in reversed(range(BOARD_HEIGHT)):
@@ -344,21 +366,6 @@ def highlight_rows(b: Board, rows: frozenset[int]) -> Board:
         for col in range(BOARD_WIDTH):
             b = board_set_tile(b, row, col, 8)
     return b
-
-
-def get_full_rows(b: Board) -> frozenset[int]:
-    rows = set()
-    for row in range(BOARD_HEIGHT):
-        if is_row_full(b, row):
-            rows.add(row)
-    return frozenset(rows)
-
-
-def is_row_full(b: Board, row: int) -> bool:
-    for col in range(BOARD_WIDTH):
-        if not board_get_tile(b, row, col):
-            return False
-    return True
 
 
 if __name__ == '__main__':
