@@ -59,6 +59,7 @@ TETROMINOES = (
     )
 
 COLOR_BLACK = (0, 0, 0)
+COLOR_WHITE = (255, 255, 255)
 COLORS = (
     COLOR_BLACK,        # [0] Black
     (0, 255, 255),      # [1] Aqua
@@ -68,7 +69,6 @@ COLORS = (
     (0, 255, 0),        # [5] Lime
     (153, 0, 255),      # [6] Purple
     (255, 0, 0),        # [7] Red
-    (255, 255, 255),    # [8] White
     )
 
 
@@ -165,7 +165,6 @@ def update(
     b = check_full_rows(b)
 
     if b.state == State.FULL_ROWS:
-        b = highlight_rows(b, b.full_rows)
         pygame.time.set_timer(PygameEvent.CLEAR_ROWS.value, 500, True)
     elif not tetromino_is_valid(t, b):
         b = b._replace(state=State.GAME_OVER)
@@ -199,9 +198,16 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
             )
         pygame.draw.rect(screen, color, rect)
 
+    def highlight_rows():
+        for row in b.full_rows:
+            for col in range(BOARD_WIDTH):
+                draw_tile(row, col, COLOR_WHITE)
+
     screen.fill(COLOR_BLACK)
     draw_board()
-    if b.state in (State.PLAY, State.GAME_OVER):
+    if b.state == State.FULL_ROWS:
+        highlight_rows()
+    else:
         draw_tetromino()
     pygame.display.flip()
 
@@ -356,13 +362,6 @@ def clear_rows(b: Board, rows: frozenset[int]) -> Board:
     tmp_tiles.extend([0] * BOARD_WIDTH * len(rows))
     tmp_tiles.reverse()
     return b._replace(tiles=tmp_tiles)
-
-
-def highlight_rows(b: Board, rows: frozenset[int]) -> Board:
-    for row in rows:
-        for col in range(BOARD_WIDTH):
-            b = board_set_tile(b, row, col, 8)
-    return b
 
 
 if __name__ == '__main__':
