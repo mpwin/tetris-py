@@ -145,7 +145,7 @@ def update(
         b: Board, t: Tetromino,
         events: frozenset[Event]) -> tuple[Board, Tetromino]:
     if Event.CLEAR_ROWS in events:
-        b = clear_rows(b, b.full_rows)
+        b = clear_full_rows(b, b.full_rows)
         b = b._replace(state=State.PLAY, full_rows=())
         return b, t
     if b.state in (State.FULL_ROWS, State.GAME_OVER):
@@ -352,7 +352,7 @@ def check_full_rows(b: Board) -> Board:
         return b
 
 
-def clear_rows(b: Board, rows: frozenset[int]) -> Board:
+def clear_full_rows(b: Board, rows: frozenset[int]) -> Board:
     tmp_tiles = []
     for row in reversed(range(BOARD_HEIGHT)):
         if row in rows:
