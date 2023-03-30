@@ -204,11 +204,17 @@ def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
                 draw_tile(row, col, COLOR_WHITE)
 
     screen.fill(COLOR_BLACK)
-    draw_board()
-    if b.state == State.FULL_ROWS:
-        highlight_rows()
-    else:
-        draw_tetromino()
+
+    match b.state:
+        case State.PLAY:
+            draw_board()
+            draw_tetromino()
+        case State.FULL_ROWS:
+            draw_board()
+            highlight_rows()
+        case State.GAME_OVER:
+            draw_board(COLOR_WHITE)
+
     pygame.display.flip()
 
 
