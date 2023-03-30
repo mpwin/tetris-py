@@ -1,6 +1,7 @@
 from collections import namedtuple
 from enum import Enum
 from random import randint
+from typing import Optional
 
 import pygame
 
@@ -173,12 +174,12 @@ def update(
 
 def draw(screen: pygame.Surface, b: Board, t: Tetromino) -> None:
 
-    def draw_board() -> None:
+    def draw_board(color: Optional[tuple[int]] = None) -> None:
         for row in range(0, BOARD_HEIGHT):
             for col in range(0, BOARD_WIDTH):
                 tile = board_get_tile(b, row, col)
                 if tile > 0:
-                    draw_tile(row, col, COLORS[tile])
+                    draw_tile(row, col, color or COLORS[tile])
 
     def draw_tetromino() -> None:
         size = TETROMINOES[t.shape]['size']
