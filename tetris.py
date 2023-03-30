@@ -347,20 +347,19 @@ def is_valid(b: Board, t: Tetromino) -> bool:
 def check_full_rows(b: Board) -> Board:
     rows = set()
 
-    def is_row_full(b: Board, row: int) -> bool:
+    def is_row_full(row: int) -> bool:
         for col in range(BOARD_WIDTH):
             if not get_tile(b.tiles, row, col):
                 return False
         return True
 
     for row in range(BOARD_HEIGHT):
-        if is_row_full(b, row):
+        if is_row_full(row):
             rows.add(row)
 
     if len(rows):
         return b._replace(state=State.FULL_ROWS, full_rows=frozenset(rows))
-    else:
-        return b
+    return b
 
 
 def clear_full_rows(b: Board, rows: frozenset[int]) -> Board:
