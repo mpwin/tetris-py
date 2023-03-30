@@ -59,25 +59,16 @@ TETROMINOES = (
     )
 
 COLOR_BLACK = (0, 0, 0)
-COLOR_AQUA = (0, 255, 255)
-COLOR_BLUE = (0, 0, 255)
-COLOR_ORANGE = (255, 170, 0)
-COLOR_YELLOW = (255, 255, 0)
-COLOR_LIME = (0, 255, 0)
-COLOR_PURPLE = (153, 0, 255)
-COLOR_RED = (255, 0, 0)
-COLOR_WHITE = (255, 255, 255)
-
 COLORS = (
-    COLOR_BLACK,
-    COLOR_AQUA,
-    COLOR_BLUE,
-    COLOR_ORANGE,
-    COLOR_YELLOW,
-    COLOR_LIME,
-    COLOR_PURPLE,
-    COLOR_RED,
-    COLOR_WHITE,
+    COLOR_BLACK,        # [0] Black
+    (0, 255, 255),      # [1] Aqua
+    (0, 0, 255),        # [2] Blue
+    (255, 170, 0),      # [3] Orange
+    (255, 255, 0),      # [4] Yellow
+    (0, 255, 0),        # [5] Lime
+    (153, 0, 255),      # [6] Purple
+    (255, 0, 0),        # [7] Red
+    (255, 255, 255),    # [8] White
     )
 
 
