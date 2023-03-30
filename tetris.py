@@ -80,7 +80,6 @@ Event = Enum('Event', (
     'MOVE_RIGHT',
     'MOVE_DOWN',
     'DROP',
-    'FORCE_DOWN',
     'CLEAR_ROWS',
     ))
 PygameEvent = Enum('PygameEvent', (
@@ -122,7 +121,7 @@ def get_events() -> tuple[frozenset[Event], bool]:
     events, running = set(), True
     for event in pygame.event.get():
         if event.type == PygameEvent.FORCE_DOWN.value:
-            events.add(Event.FORCE_DOWN)
+            events.add(Event.MOVE_DOWN)
         if event.type == PygameEvent.CLEAR_ROWS.value:
             events.add(Event.CLEAR_ROWS)
         if event.type == pygame.QUIT:
@@ -158,7 +157,7 @@ def update(
         t = move_left(t, b)
     if Event.MOVE_RIGHT in events:
         t = move_right(t, b)
-    if Event.MOVE_DOWN in events or Event.FORCE_DOWN in events:
+    if Event.MOVE_DOWN in events:
         b, t = move_down(b, t)
     if Event.DROP in events:
         b, t = drop(b, t)
