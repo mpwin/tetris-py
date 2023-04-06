@@ -132,13 +132,13 @@ def get_events() -> tuple[frozenset[Event], bool]:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
+            if event.key in (pygame.K_UP, pygame.K_w):
                 events.add(Event.ROTATE)
-            if event.key == pygame.K_DOWN:
+            if event.key in (pygame.K_DOWN, pygame.K_s):
                 events.add(Event.MOVE_DOWN)
-            if event.key == pygame.K_LEFT:
+            if event.key in (pygame.K_LEFT, pygame.K_a):
                 events.add(Event.MOVE_LEFT)
-            if event.key == pygame.K_RIGHT:
+            if event.key in (pygame.K_RIGHT, pygame.K_d):
                 events.add(Event.MOVE_RIGHT)
             if event.key == pygame.K_SPACE:
                 events.add(Event.DROP)
